@@ -49,12 +49,13 @@ small{color:var(--t2);font-size:12px}
 const $=s=>document.querySelector(s),app=$('#app');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const f=n=>(n<0?'-':'')+'£'+Math.abs(Math.round(n)).toLocaleString('en-GB');
-const def=()=>({v:1,lastBackup:0,cars:[],notes:{},chk:{},fuel:'Petrol',gear:'Manual',draft:{model:'',reg:'',ask:'',oth:150,sale:'',days:21,tgt:500,repairs:[]}});
-let st=def(),tab='check',selId=0,open={s0:true},rmArm=0;
-const migrate=o=>{o.v=o.v||1;return o};
-try{const s=localStorage.getItem('carflip.v1');if(s)st=migrate(Object.assign(def(),JSON.parse(s)))}catch(e){}
+const def=()=>({v:2,lastBackup:0,cars:[],short:[],active:null,notes:{},chk:{},fuel:'Petrol',gear:'Manual',draft:{model:'',reg:'',note:'',ask:'',oth:150,sale:'',days:21,tgt:500,repairs:[]}});
+let st=def(),tab='check',selId=0,open={s0:true},rmArm=0,slArm=0;
+const migrate=o=>{o.v=o.v||1;if(o.v<2){o.short=o.short||[];o.active=null;o.draft=o.draft||def().draft;o.draft.note=o.draft.note||'';o.v=2}o.short=o.short||[];return o};
+const linkActive=()=>{const x=st.active&&st.short.find(y=>y.id===st.active);if(x){st.draft=x.draft;st.chk=x.chk;st.fuel=x.fuel;st.gear=x.gear}else st.active=null};
+try{const s=localStorage.getItem('carflip.v1');if(s)st=migrate(Object.assign(def(),JSON.parse(s)));linkActive()}catch(e){}
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
-const save=()=>{try{localStorage.setItem('carflip.v1',JSON.stringify(st))}catch(e){}};
+const save=()=>{try{const x=st.active&&st.short.find(y=>y.id===st.active);if(x){x.draft=st.draft;x.chk=st.chk;x.fuel=st.fuel;x.gear=st.gear}localStorage.setItem('carflip.v1',JSON.stringify(st))}catch(err){}};
 const mets=a=>`<div class="g2">${a.map(x=>`<div class="m"><span>${x[0]}</span><b${x[2]?` class="${x[2]}"`:''}>${x[1]}</b></div>`).join('')}</div>`;
 const ban=(g,t)=>`<div class="ban ${g}">${t}</div>`;
 const S=[
@@ -77,18 +78,23 @@ const cost=c=>c.bought+c.rep+c.other+days(c)*4;
 const cur=c=>c.soldPrice!=null?c.soldPrice:c.offers.length?c.offers[c.offers.length-1][1]:c.listed;
 const sCar=()=>st.cars.find(c=>c.id===selId&&c.soldPrice==null)||st.cars.find(c=>c.soldPrice==null);
 const nf=(k,l)=>`<label>${l}<input data-d="${k}" type="number" inputmode="decimal" value="${esc(st.draft[k])}"></label>`;
-function vCheck(){const d=st.draft;return `<div class="card"><h2>Deal check</h2>
+function slCard(){if(!st.short.length)return '';return `<div class="card"><h2>Shortlist <small>${st.short.length} car${st.short.length>1?'s':''}</small></h2>${st.short.map(x=>{const c=calc(x.draft),v=!c.ask||!c.sale?'Needs prices':c.ask<=c.max?'Worth viewing':'Over by '+f(c.ask-c.max),k=!c.ask||!c.sale?'':c.ask<=c.max?'t-ok':'t-bad';return `<button class="lb${x.id===st.active?' sel2':''}" data-a="opensl" data-id="${x.id}"><b>${esc(x.draft.model||'Unnamed')}</b> <small>${esc(x.draft.reg||'')}</small><br><small>${c.ask?'Asking '+f(c.ask)+' · ':''}${c.sale?'Max bid '+f(c.max)+' · ':''}<span class="${k}">${v}</span></small></button>`}).join('')}</div>`}
+function vCheck(){const d=st.draft;return slCard()+`<div class="card"><h2>Deal check</h2>
 <label>Reg plate<input class="plate" data-d="reg" value="${esc(d.reg)}" placeholder="AB16 CDE" autocapitalize="characters"></label>
 <label style="margin:10px 0">Model<input data-d="model" value="${esc(d.model)}" placeholder="Ford Fiesta 1.0"></label>
+<label style="margin-bottom:10px">Listing link, seller, notes<textarea data-d="note" rows="2" placeholder="Link, seller's number, what they said">${esc(d.note||'')}</textarea></label>
 <div class="g2">${nf('ask','Asking or agreed price (£)')}${nf('oth','Other costs (£)')}${nf('sale','Expected sale (£)')}${nf('days','Days to sell')}${nf('tgt','Target profit (£)')}</div></div>
 <div class="card"><h2>Repairs <span id="reptot"></span></h2><div id="replist"></div><div class="r" style="margin-top:8px"><input id="rn" placeholder="Clutch"><input id="ra" type="number" inputmode="numeric" placeholder="£" style="width:90px"><button class="sm" data-a="addrep" aria-label="Add repair">+</button></div><small id="rerr" class="t-bad"></small></div>
-<div id="res"></div><button class="pri" data-a="buy">Bought it: add to In stock</button><small id="berr" class="t-bad"></small>`}
+<div id="res"></div>${st.active?'<small>On your shortlist. Changes save automatically.</small>':'<button class="sm" data-a="saveSl" style="width:100%;margin-bottom:8px">Save to shortlist</button>'}
+<button class="pri" data-a="buy" style="margin-top:8px">Bought it: add to In stock</button><small id="berr" class="t-bad"></small>
+<div class="r" style="margin-top:12px"><button class="sm" data-a="newdeal">New deal</button>${st.active?`<button class="sm" data-a="rmsl">${slArm===st.active?'Tap again to remove':'Remove from shortlist'}</button>`:''}</div>`}
 function updCheck(){const d=st.draft,c=calc(d);
 $('#reptot').textContent=f(c.rep);
 $('#replist').innerHTML=d.repairs.length?d.repairs.map((r,i)=>`<div class="li"><span>${esc(r.n)}</span><span>${f(r.a)} <button class="sm" data-a="delrep" data-i="${i}" aria-label="Remove ${esc(r.n)}">×</button></span></div>`).join(''):'<small>No repairs yet. Add each job with its cost.</small>';
 $('#res').innerHTML=(!c.ask||!c.sale)?ban('wn','Enter the asking price and expected sale price to see the verdict.'):(c.ask<=c.max?ban('ok',`Asking price is ${f(c.max-c.ask)} under your max bid. Worth viewing.`):ban('bad',`Asking price is ${f(c.ask-c.max)} over your max bid. Offer ${f(c.max)} or walk away.`))+mets([['Profit',f(c.profit),c.profit>=0?'t-ok':'t-bad'],['ROI',c.roi.toFixed(1)+'%'],['Profit per day',f(c.pd)],['Max bid',f(c.max)]])+'<small>Assumes a 5% haggle off the sale price, a 10% repair buffer and £4 a day holding cost.</small>'}
 function vView(){const d=st.draft,ns=st.notes[d.model||'_']||'';
 let h=`<div class="card"><h2>${esc(d.model||'No model set')} <small>${esc(d.reg)}</small></h2>
+${st.short.length?`<label style="margin-bottom:10px">Switch car<select id="sw">${st.active?'':'<option value="0" selected>Unsaved deal</option>'}${st.short.map(x=>`<option value="${x.id}"${x.id===st.active?' selected':''}>${esc(x.draft.model||'Unnamed')} ${esc(x.draft.reg||'')}</option>`).join('')}</select></label>`:''}
 <label>Fuel</label><div class="r" style="margin:4px 0 10px">${Object.keys(F).map(k=>`<button class="sm${k===st.fuel?' sel':''}" data-a="fuel" data-v="${k}">${k}</button>`).join('')}</div>
 <label>Gearbox</label><div class="r" style="margin:4px 0 10px">${st.fuel==='Electric'?'<small>Not needed for electric cars.</small>':Object.keys(G).map(k=>`<button class="sm${k===st.gear?' sel':''}" data-a="gear" data-v="${k}">${k}</button>`).join('')}</div>
 <label>Known problems for this model<textarea data-note rows="2" placeholder="Faults you've learned to look for">${esc(ns)}</textarea></label></div><div id="csum"></div>`;
@@ -118,8 +124,11 @@ if(L.length){const t=L.reduce((s,c)=>s+pr(c),0),d=L.reduce((s,c)=>s+days(c),0)/L
 h+=mets([['Total profit',f(t),t>=0?'t-ok':'t-bad'],['Cars sold',L.length],['Avg profit per car',f(t/L.length)],['Avg days to sell',Math.round(d)]])+ban(o>0?'wn':'ok',o>0?`Your repair estimates ran ${f(o)} under the real cost per car on average.`:'Your repair estimates are at or under real costs on average.')+'<div class="card">'+L.map(c=>`<div class="li"><span><b>${esc(c.model)}</b><br><small>${esc(c.reg)} · ${f(c.bought)} → ${f(c.soldPrice)} · ${days(c)} days<br>Repairs: est ${f(c.repEst)}, actual ${f(c.rep)}</small></span><b class="${pr(c)>=0?'t-ok':'t-bad'}">${f(pr(c))}</b></div>`).join('')+'</div>'}
 else h+='<div class="card"><small>Sold cars appear here with profit and days to sell.</small></div>';
 return h+`<div class="card"><h2>Backup</h2><small>Your data lives in this browser only. Download a backup now and then and keep it somewhere safe.</small><div class="r" style="margin:8px 0"><button class="sm" data-a="dl">Download backup file</button><button class="sm" data-a="bk">Show as text</button></div><small>${st.lastBackup?'Last backup: '+new Date(st.lastBackup).toLocaleDateString('en-GB'):'No backup yet.'}</small><textarea id="bkt" rows="3" readonly placeholder="Backup appears here. Select all and copy."></textarea><label style="margin-top:8px">Restore: paste a backup here<textarea id="rst" rows="3"></textarea></label><label style="margin-top:8px">Or restore from a backup file<input type="file" id="rf" accept=".json,application/json"></label><div class="r" style="margin-top:8px"><button class="sm" data-a="rs">Restore</button></div><small id="bmsg"></small></div>`}
-function bkNote(){if(!st.cars.length)return '';const d=st.lastBackup?Math.floor((Date.now()-st.lastBackup)/864e5):-1;if(d>=0&&d<7)return '';return '<button class="ban wn" data-a="gosold">'+(d<0?"You haven't backed up yet.":'Last backup was '+d+' days ago.')+' Tap to back up.</button>'}
-function doRestore(t){try{const o=JSON.parse(t);if(!o||!Array.isArray(o.cars))throw 0;st=migrate(Object.assign(def(),o));save();render();$('#bmsg').textContent='Restored.'}catch(x){const m=$('#bmsg');if(m)m.textContent='That backup could not be read. Use the full file or text you saved.'}}
+function autoSave(){if(!st.active&&(st.draft.model.trim()||+st.draft.ask))st.short.push({id:Date.now(),draft:st.draft,chk:st.chk,fuel:st.fuel,gear:st.gear})}
+function openDeal(id){save();autoSave();const x=st.short.find(y=>y.id===id);if(!x)return;st.active=id;st.draft=x.draft;st.chk=x.chk;st.fuel=x.fuel;st.gear=x.gear;save()}
+function newDeal(){save();autoSave();const n=def();st.active=null;st.draft=n.draft;st.chk={};st.fuel='Petrol';st.gear='Manual';save()}
+function bkNote(){if(!st.cars.length&&!st.short.length)return '';const d=st.lastBackup?Math.floor((Date.now()-st.lastBackup)/864e5):-1;if(d>=0&&d<7)return '';return '<button class="ban wn" data-a="gosold">'+(d<0?"You haven't backed up yet.":'Last backup was '+d+' days ago.')+' Tap to back up.</button>'}
+function doRestore(t){try{const o=JSON.parse(t);if(!o||!Array.isArray(o.cars))throw 0;st=migrate(Object.assign(def(),o));linkActive();save();render();$('#bmsg').textContent='Restored.'}catch(x){const m=$('#bmsg');if(m)m.textContent='That backup could not be read. Use the full file or text you saved.'}}
 function render(){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));app.innerHTML=(tab!=='sold'?bkNote():'')+{check:vCheck,viewing:vView,stock:vStock,sold:vSold}[tab]();if(tab==='check')updCheck();if(tab==='viewing')updChk();if(tab==='stock')updCar()}
 const msg=(t,c)=>{const e=$('#cmsg');if(e){e.textContent=t;e.className=c}};
 app.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const v=b.dataset.v;
@@ -128,7 +137,11 @@ case'addrep':{const n=$('#rn').value.trim(),a=parseFloat($('#ra').value);if(!n||
 case'delrep':st.draft.repairs.splice(+b.dataset.i,1);save();updCheck();return;
 case'buy':{const d=st.draft,c=calc(d);if(!d.model.trim()||!c.ask){$('#berr').textContent='Add the model and asking price first.';return}
 const car={id:Date.now(),model:d.model.trim(),reg:d.reg.trim().toUpperCase(),bought:c.ask,repEst:c.rep,rep:c.rep,other:+d.oth||0,listed:c.sale,target:+d.tgt||0,start:Date.now(),offers:[],soldPrice:null,soldTs:null,pay:[false,false,false,false]};
-st.cars.push(car);st.draft=def().draft;st.chk={};selId=car.id;save();tab='stock';render();return}
+st.cars.push(car);if(st.active){st.short=st.short.filter(x=>x.id!==st.active);st.active=null}const nd=def();st.draft=nd.draft;st.chk={};st.fuel='Petrol';st.gear='Manual';selId=car.id;save();tab='stock';render();return}
+case'saveSl':{if(!st.draft.model.trim()){$('#berr').textContent='Add the model first.';return}const x={id:Date.now(),draft:st.draft,chk:st.chk,fuel:st.fuel,gear:st.gear};st.short.push(x);st.active=x.id;save();render();return}
+case'newdeal':newDeal();render();window.scrollTo(0,0);return;
+case'opensl':openDeal(+b.dataset.id);render();return;
+case'rmsl':{if(slArm===st.active){st.short=st.short.filter(x=>x.id!==st.active);st.active=null;const n=def();st.draft=n.draft;st.chk={};st.fuel='Petrol';st.gear='Manual';slArm=0;save()}else slArm=st.active;render();return}
 case'sec':open[v]=!open[v];render();return;
 case'fuel':st.fuel=v;save();render();return;
 case'gear':st.gear=v;save();render();return;
@@ -150,8 +163,8 @@ else if(d.c!==undefined){ck(d.c).c=t.value;save();updChk()}
 else if(d.n!==undefined){ck(d.n).n=t.value;save()}
 else if(d.cf!==undefined){sCar()[d.cf]=+t.value||0;save();updCar()}
 else if(d.note!==undefined){st.notes[st.draft.model||'_']=t.value;save()}});
-app.addEventListener('change',e=>{const t=e.target;if(t.id==='rf'){const fl=t.files[0];if(fl)fl.text().then(doRestore);return}const p=t.dataset.pay;if(p!==undefined){sCar().pay[+p]=t.checked;save();updCar()}});
-$('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.t;rmArm=0;render();window.scrollTo(0,0)});
+app.addEventListener('change',e=>{const t=e.target;if(t.id==='sw'){if(+t.value)openDeal(+t.value);render();return}if(t.id==='rf'){const fl=t.files[0];if(fl)fl.text().then(doRestore);return}const p=t.dataset.pay;if(p!==undefined){sCar().pay[+p]=t.checked;save();updCar()}});
+$('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.t;rmArm=0;slArm=0;render();window.scrollTo(0,0)});
 render();
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script></body></html>
