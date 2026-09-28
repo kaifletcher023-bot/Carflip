@@ -38,7 +38,7 @@ button{cursor:pointer}
 .ban svg{width:19px;height:19px;flex-shrink:0;margin-top:1px}
 .m{background:var(--bg);border-radius:12px;padding:13px 14px}.m b{display:block;font-size:25px;line-height:1.2;letter-spacing:-.01em}.m span{font-size:12.5px;color:var(--t2)}
 .ok{background:var(--okb);color:var(--ok);border-color:transparent}.bad{background:var(--badb);color:var(--bad);border-color:transparent}.wn{background:var(--wnb);color:var(--wn);border-color:transparent}
-.t-ok{color:var(--ok)}.t-bad{color:var(--bad)}
+.t-ok{color:var(--ok)}.t-bad{color:var(--bad)}.t-wn{color:var(--wn)}
 small{color:var(--t2);font-size:12.5px}
 .li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 0;border-bottom:1px solid var(--bd);font-size:15px}
 .lb{width:100%;background:none;border:0;border-bottom:1px solid var(--bd);color:var(--tx);text-align:left;font:inherit;padding:14px 8px;border-radius:8px;transition:background .1s}
@@ -188,14 +188,14 @@ function updHist(){
   if(!d.reg.trim()){e.innerHTML='<small>Enter a reg plate above first.</small>';return}
   const eb=histErr?ban('bad','Could not run the check: '+esc(histErr)):'';
   if(!d.historyCheck){
-    e.innerHTML=eb+'<p style="font-size:14px;margin:0 0 10px">Checks for outstanding finance, stolen and write-off status. Costs £1.82 each time you run it.</p><button class="pri" data-a="runhist">Run full history check (£1.82)</button>';
+    e.innerHTML=eb+'<p style="font-size:14px;margin:0 0 10px">Checks for outstanding finance, stolen and write-off status, plus the mileage record. Costs £1.84 each time you run it.</p><button class="pri" data-a="runhist">Run full history check (£1.84)</button>';
     return;
   }
   const h=d.historyCheck;
   if(h.configured===false){e.innerHTML=ban('wn',"History check isn't set up yet.");return}
-  if(h.error){e.innerHTML=ban('bad','Could not run the check: '+esc(h.error))+'<button class="sm" data-a="runhist" style="margin-top:8px">Try again (£1.82)</button>';return}
-  if(h.found===false){e.innerHTML=ban('wn','No history record found for that plate.')+'<button class="sm" data-a="runhist" style="margin-top:8px">Try again (£1.82)</button>';return}
-  if(h.found!==true){e.innerHTML=ban('bad','The saved result looks incomplete.')+'<button class="sm" data-a="runhist" style="margin-top:8px">Run again (£1.82)</button>';return}
+  if(h.error){e.innerHTML=ban('bad','Could not run the check: '+esc(h.error))+'<button class="sm" data-a="runhist" style="margin-top:8px">Try again (£1.84)</button>';return}
+  if(h.found===false){e.innerHTML=ban('wn','No history record found for that plate.')+'<button class="sm" data-a="runhist" style="margin-top:8px">Try again (£1.84)</button>';return}
+  if(h.found!==true){e.innerHTML=ban('bad','The saved result looks incomplete.')+'<button class="sm" data-a="runhist" style="margin-top:8px">Run again (£1.84)</button>';return}
   const bad=h.stolen||h.finance||h.writeOff;
   e.innerHTML=eb+ban(bad?'bad':'ok',bad?'Issues found on this car\u2019s history.':'Clear on stolen, finance and write-off records.')+'<button class="pri" data-a="viewhist">View full history</button>';
 }
@@ -223,7 +223,58 @@ function dstr(x){const dt=new Date(x);return isNaN(dt)?String(x):dt.toLocaleDate
 function yn(b){return b?'Yes':'No'}
 function kv(label,val,cls){return val==null||val===''?'':`<div class="li"><span style="color:var(--t2);font-size:14px">${esc(label)}</span><span class="${cls||''}" style="text-align:right">${esc(String(val))}</span></div>`}
 function dd(key,title,inner,badge){return `<div class="dd"><button class="sh" data-a="sec" data-v="${key}"><span>${title}</span><span>${badge||''}${open[key]?'▲':'▼'}</span></button>${open[key]?`<div class="ci">${inner||'<small>Nothing returned for this car.</small>'}</div>`:''}</div>`}
-function histDetail(r){
+function miAnalyse(list){
+  const rs=(list||[]).filter(r=>r&&r.date&&Number.isFinite(r.miles)).map(r=>({...r,t:new Date(r.date).getTime()})).filter(r=>!isNaN(r.t)).sort((a,b)=>b.t-a.t);
+  const rows=rs.map((r,i)=>{
+    const prev=rs[i+1];let delta=null,days=null,perYear=null;
+    if(prev){delta=r.miles-prev.miles;days=(r.t-prev.t)/864e5;perYear=days>=30?delta/days*365:null}
+    return {...r,delta,days,perYear};
+  });
+  const rates=rows.filter(r=>r.perYear!=null&&r.days>=300&&r.delta>=0).map(r=>r.perYear).sort((a,b)=>a-b);
+  const med=rates.length>=3?(rates.length%2?rates[(rates.length-1)/2]:(rates[rates.length/2-1]+rates[rates.length/2])/2):null;
+  rows.forEach(r=>{
+    r.flag=null;
+    if(r.delta!=null&&r.delta<0)r.flag='drop';
+    else if(med!=null&&r.perYear!=null&&r.days>=300){
+      if(r.perYear<med*0.25)r.flag='low';
+      else if(r.perYear>med*2)r.flag='high';
+    }
+  });
+  return rows;
+}
+function miSection(m){
+  const note=t=>`<small>${t}</small>`;
+  if(!m)return {html:note('Not included in this saved check. Run it again to add it.'),badge:''};
+  if(!m.found)return {html:note('Mileage record not available for this car'+(m.error?': '+esc(m.error):'.')),badge:''};
+  const rows=miAnalyse(m.readings);
+  const drops=rows.filter(r=>r.flag==='drop').length,odd=rows.filter(r=>r.flag==='low'||r.flag==='high').length;
+  const prov=String(m.issues||'').toLowerCase()==='yes'||!!m.issueDescription;
+  const count=drops+odd+(prov?1:0);
+  const nf=n=>Number(n).toLocaleString('en-GB');
+  const cap=s=>s?s.charAt(0)+s.slice(1).toLowerCase():'';
+  let html=kv('Last recorded',m.lastRecorded!=null?nf(m.lastRecorded)+' miles':null)
+    +kv('Average',m.averagePerYear?nf(Math.round(m.averagePerYear))+' miles a year'+(m.status?' ('+cap(m.status)+')':''):null)
+    +kv('Provider mileage check',prov?'Issue: '+(m.issueDescription||'flagged'):'No issues',prov?'t-bad':'');
+  if(rows.length){
+    const mo=Math.floor((Date.now()-rows[0].t)/(30.44*864e5));
+    if(mo>=3)html+=`<small style="display:block;margin:8px 0">Last reading was ${mo} months ago, so the car has probably done more miles since.</small>`;
+    html+=rows.map(r=>{
+      const unit=r.unit==='KM'?'km':'miles';
+      let sub='';
+      if(r.delta!=null){
+        if(r.delta<0)sub=`<br><small class="t-bad">${nf(Math.abs(r.delta))} fewer than the previous reading</small>`;
+        else{
+          const cls=r.flag?'t-wn':'';
+          sub=`<br><small class="${cls}">+${nf(r.delta)}${r.perYear!=null?' · about '+nf(Math.round(r.perYear/100)*100)+' a year':''}${r.flag==='low'?' · unusually low':r.flag==='high'?' · unusually high':''}</small>`;
+        }
+      }
+      return `<div class="li"><span style="color:var(--t2);font-size:14px">${esc(dstr(r.date))}<br><small>${esc(r.source||'')}</small></span><span style="text-align:right">${nf(r.miles)} ${unit}${sub}</span></div>`;
+    }).join('');
+  }else html+=note('No readings returned.');
+  const cls=(drops||prov)?'t-bad':'t-wn';
+  return {html,badge:count?`<span class="${cls}">${count} flag${count>1?'s':''} · </span>`:''};
+}
+function histDetail(r,mil){
   const R=r.VehicleRegistration||{},H=r.VehicleHistory||{},Cd=H.ColourChangeDetails||{},E=r.Engine||{},P=r.Performance||{},S=r.SmmtDetails||{},Dm=r.Dimensions||{},Cn=r.Consumption||{},G=r.General||{},V=(r.vedRate&&r.vedRate.Standard)||{};
   const ev=[],add=(d,t)=>{if(d)ev.push([d,t])};
   (H.KeeperChangesList||[]).forEach(k=>add(k.DateOfTransaction,'Changed hands'+(k.NumberOfPreviousKeepers!=null?' (previous keepers: '+k.NumberOfPreviousKeepers+')':'')));
@@ -247,7 +298,9 @@ function histDetail(r){
     kv('0 to 60 mph',P.Acceleration&&P.Acceleration.ZeroTo60Mph!=null?P.Acceleration.ZeroTo60Mph+' s':null),kv('Top speed',P.MaxSpeed&&P.MaxSpeed.Mph!=null?P.MaxSpeed.Mph+' mph':null),
     kv('Gearbox',R.Transmission),kv('Drive',S.DriveType),kv('Body',R.DoorPlanLiteral||S.BodyStyle),kv('Seats',R.SeatingCapacity),kv('Range',S.Range&&S.Series?S.Range+' '+S.Series:S.Range),
     kv('Kerb weight',Dm.KerbWeight!=null?Dm.KerbWeight+' kg':null)].join('');
+  const mi=miSection(mil);
   return dd('h-tl','Ownership timeline',timeline,ev.length?`<small>${ev.length} events · </small>`:'')
+    +dd('h-mi','Mileage history',mi.html,mi.badge)
     +dd('h-id','Identity checks',idRows+(idRows?'<small style="display:block;margin-top:8px">Compare the VIN and engine number with the car and the V5C.</small>':''))
     +dd('h-fl','Other red flags',flRows,flagCount?`<span class="t-bad">${flagCount} flag${flagCount>1?'s':''} · </span>`:'')
     +dd('h-run','Running costs',runRows)
@@ -273,8 +326,8 @@ function updHistFull(){
     +rows('Stolen record',h.stolenDetails,[['forcename','Force'],['creationdate','Reported','d'],['status','Status']])
     +rows('Finance record',h.financeDetails,[['financecompany','Lender'],['contactnumber','Lender phone'],['agreementnumber','Agreement no.'],['agreementtype','Type'],['dateofagreement','Agreed','d'],['agreementterminmonths','Term (months)']])
     +rows('Write-off record',h.writeOffDetails,[['insurername','Insurer'],['status','Category'],['lossdate','Loss date','d'],['causeofdamage','Cause']])
-    +(h.raw?histDetail(h.raw):rows('Plate changes',h.plateChangeList,[['PreviousVRM','From'],['CurrentVRM','To'],['DateOfTransaction','Date','d']])+'<small style="display:block;margin-top:10px">Run the check again to see keeper dates, identity checks, running costs and spec. Results saved before this update only kept the summary.</small>')
-    +`<small style="display:block;margin-top:10px">Checked ${when}.</small><button class="sm" data-a="runhist" style="margin-top:8px">Run again (£1.82)</button>`;
+    +(h.raw?histDetail(h.raw,h.mileage):rows('Plate changes',h.plateChangeList,[['PreviousVRM','From'],['CurrentVRM','To'],['DateOfTransaction','Date','d']])+'<small style="display:block;margin-top:10px">Run the check again to see keeper dates, mileage history, identity checks, running costs and spec. Results saved before this update only kept the summary.</small>')
+    +`<small style="display:block;margin-top:10px">Checked ${when}.</small><button class="sm" data-a="runhist" style="margin-top:8px">Run again (£1.84)</button>`;
 }
 function updValFull(){
   const e=$('#valfull');if(!e)return;
@@ -435,7 +488,7 @@ case'runhist':{
   if(historyBusy)return;
   const reg=st.draft.reg.trim().replace(/\s+/g,'');
   if(!reg)return;
-  if(!confirm('This checks finance, stolen and write-off status and costs £1.82. Continue?'))return;
+  if(!confirm('This runs the finance, stolen, write-off and mileage checks and costs £1.84. Continue?'))return;
   historyBusy=true;histErr='';render();
   let out=null;
   try{
