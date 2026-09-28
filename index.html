@@ -6,60 +6,107 @@
 <title>Car flip</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&display=swap">
 <style>
-:root{--bg:#e9edf1;--card:#fff;--tx:#14202b;--t2:#56626e;--bd:#d3dae1;--ac:#f4c20d;--act:#14202b;--ok:#17703a;--okb:#dff3e5;--bad:#a8261d;--badb:#fbe2df;--wn:#805200;--wnb:#fbefcf;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f151b;--card:#19222b;--tx:#e8edf2;--t2:#9aa7b3;--bd:#2b3743;--ok:#6fd08f;--okb:#17301f;--bad:#ff8f86;--badb:#3a1a18;--wn:#f0c14f;--wnb:#372b0d}}
-:root[data-theme="dark"]{--bg:#0f151b;--card:#19222b;--tx:#e8edf2;--t2:#9aa7b3;--bd:#2b3743;--ok:#6fd08f;--okb:#17301f;--bad:#ff8f86;--badb:#3a1a18;--wn:#f0c14f;--wnb:#372b0d}
+:root{--bg:#f4efe4;--card:#fffdf9;--tx:#211a12;--t2:#7a7060;--bd:#e6dcc8;--ac:#f4c20d;--act:#211a12;--ok:#1f7a43;--okb:#e3f1e6;--bad:#b3352a;--badb:#fbe6e1;--wn:#8a5c00;--wnb:#fdf0d6;--rad:14px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15120d;--card:#211c15;--tx:#f3ede1;--t2:#a89d89;--bd:#3a3226;--ok:#7fd89a;--okb:#1c3325;--bad:#ff9a8c;--badb:#3a1f1a;--wn:#f2c766;--wnb:#3a2e10}}
+:root[data-theme="dark"]{--bg:#15120d;--card:#211c15;--tx:#f3ede1;--t2:#a89d89;--bd:#3a3226;--ok:#7fd89a;--okb:#1c3325;--bad:#ff9a8c;--badb:#3a1f1a;--wn:#f2c766;--wnb:#3a2e10}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:inherit}
-body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 Barlow,system-ui,-apple-system,"Segoe UI",sans-serif}
-main{max-width:560px;margin:0 auto;padding:0 12px 32px}
-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:4px;background:var(--bg);padding:10px 0;margin-bottom:4px}
-nav button{flex:1;padding:10px 0;border:1px solid var(--bd);background:var(--card);color:var(--t2);border-radius:8px;font:inherit;font-weight:600;font-size:14px}
-nav button.on{background:var(--tx);color:var(--bg);border-color:var(--tx)}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
-h2{font-size:17px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 Barlow,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:600px;margin:0 auto;padding:0 14px 40px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:6px;background:var(--bg);padding:10px 0 12px;margin-bottom:6px}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px 7px;border:1.5px solid var(--bd);background:var(--card);color:var(--t2);border-radius:12px;font:inherit;font-weight:600;font-size:10.5px}
+nav button svg{width:19px;height:19px}
+nav button.on{background:var(--ac);color:var(--act);border-color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--rad);padding:18px;margin-bottom:16px}
+h2{font-size:18px;margin:0 0 12px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;letter-spacing:-.01em}
 label{display:block;font-size:13px;color:var(--t2)}
 input,select,textarea,button{font:inherit}
-input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);margin-top:3px}
+input,select,textarea{width:100%;padding:12px 13px;border:1.5px solid var(--bd);border-radius:11px;background:var(--bg);color:var(--tx);margin-top:6px;transition:border-color .15s}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px rgba(244,194,13,.28)}
 button{cursor:pointer}
-:focus-visible{outline:2px solid var(--tx);outline-offset:2px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 .r{display:flex;gap:8px;align-items:center}
-.pri{width:100%;padding:13px;border:0;border-radius:10px;background:var(--ac);color:var(--act);font-weight:600;font-size:16px}
-.sm{padding:6px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);font-size:14px}
-.sm.sel{background:var(--tx);color:var(--bg)}
-.plate{background:#f4c20d;color:#111;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;font-size:22px;border:2px solid #111;border-radius:6px}
-.ban{display:flex;gap:8px;padding:10px 12px;border-radius:10px;margin-bottom:12px;font-weight:600;font-size:14px;background:var(--card);border:1px solid var(--bd)}
-button.ban{width:100%;text-align:left;font:inherit;font-weight:600;cursor:pointer}
-.m{background:var(--bg);border-radius:10px;padding:10px}.m b{display:block;font-size:24px;line-height:1.2}.m span{font-size:13px;color:var(--t2)}
+.pri{width:100%;padding:15px;border:0;border-radius:12px;background:var(--ac);color:var(--act);font-weight:600;font-size:16px;transition:transform .1s}
+.pri:active{transform:scale(.98)}
+.pri:disabled{opacity:.5}
+.sm{padding:9px 14px;border:1.5px solid var(--bd);border-radius:11px;background:var(--card);color:var(--tx);font-size:14px;font-weight:500;transition:transform .1s}
+.sm:active{transform:scale(.97)}
+.sm.sel{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+.plate{background:#f4c20d;color:#111;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:center;font-size:22px;border:2px solid #111;border-radius:8px}
+.ban{display:flex;gap:10px;align-items:flex-start;padding:13px 15px;border-radius:12px;margin-bottom:14px;font-weight:600;font-size:14px;line-height:1.4;background:var(--card);border:1px solid var(--bd)}
+.ban svg{width:19px;height:19px;flex-shrink:0;margin-top:1px}
+.m{background:var(--bg);border-radius:12px;padding:13px 14px}.m b{display:block;font-size:25px;line-height:1.2;letter-spacing:-.01em}.m span{font-size:12.5px;color:var(--t2)}
 .ok{background:var(--okb);color:var(--ok);border-color:transparent}.bad{background:var(--badb);color:var(--bad);border-color:transparent}.wn{background:var(--wnb);color:var(--wn);border-color:transparent}
 .t-ok{color:var(--ok)}.t-bad{color:var(--bad)}
-small{color:var(--t2);font-size:12px}
-.li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:15px}
-.lb{width:100%;background:none;border:0;border-bottom:1px solid var(--bd);color:var(--tx);text-align:left;font:inherit;padding:10px 6px}
+small{color:var(--t2);font-size:12.5px}
+.li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 0;border-bottom:1px solid var(--bd);font-size:15px}
+.lb{width:100%;background:none;border:0;border-bottom:1px solid var(--bd);color:var(--tx);text-align:left;font:inherit;padding:14px 8px;border-radius:8px;transition:background .1s}
+.lb:active{background:var(--bg)}
 .sel2{background:var(--bg)}
-.sh{width:100%;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:none;border:0;color:var(--tx);font-weight:600;font-size:15px;text-align:left}
-.ci{padding:10px 14px;border-top:1px solid var(--bd)}
-.st-ok{background:var(--okb);color:var(--ok);font-weight:600}.st-issue{background:var(--badb);color:var(--bad);font-weight:600}.st-unsure{background:var(--wnb);color:var(--wn);font-weight:600}
+.sh{width:100%;display:flex;justify-content:space-between;align-items:center;padding:15px 16px;background:none;border:0;color:var(--tx);font-weight:600;font-size:15.5px;text-align:left}
+.ci{padding:13px 16px 15px;border-top:1px solid var(--bd)}
+.st-ok{background:var(--okb);color:var(--ok);font-weight:600;border-color:transparent}.st-issue{background:var(--badb);color:var(--bad);font-weight:600;border-color:transparent}.st-unsure{background:var(--wnb);color:var(--wn);font-weight:600;border-color:transparent}
+#gate{max-width:340px;margin:64px auto;text-align:center}
+#gate svg{width:34px;height:34px;color:var(--ac);margin-bottom:6px}
+.savepill{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:10px;font-size:12px;padding:5px 11px;border-radius:20px;background:var(--card);border:1px solid var(--bd);color:var(--t2);z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.savepill.saving{color:var(--wn)}.savepill.saved{color:var(--ok)}.savepill.error{color:var(--bad)}
 </style></head>
-<body><main>
-<nav><button data-t="check">Check</button><button data-t="auction">Auction</button><button data-t="viewing">Viewing</button><button data-t="stock">In stock</button><button data-t="sold">Sold</button></nav>
-<div id="app"></div></main>
-<script>
-const $=s=>document.querySelector(s),app=$('#app');
+<body>
+
+<div id="gate" class="card">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16l1.5-6.5A2 2 0 017.4 8h9.2a2 2 0 011.9 1.5L20 16"/><rect x="3" y="16" width="18" height="4" rx="1.5"/><circle cx="7.5" cy="20" r="1.4"/><circle cx="16.5" cy="20" r="1.4"/></svg>
+  <h1 style="font-size:21px;margin:0 0 8px;font-weight:600">Car flip</h1>
+  <p><small>Sign in with the account you created in this project's Supabase dashboard (Authentication -&gt; Users -&gt; Add user).</small></p>
+  <label for="email">Email</label><input id="email" type="email" autocomplete="username">
+  <label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password">
+  <div class="r" style="margin-top:10px"><button class="pri" id="login">Sign in</button></div>
+  <p id="gateerr" class="t-bad" style="font-size:13px"></p>
+  <p id="notconfigured" class="t-bad" style="font-size:13px;display:none">Supabase isn't set up yet &mdash; add your project URL and key near the top of this file's script first.</p>
+</div>
+
+<main id="main" style="display:none">
+<span class="savepill" id="savepill" style="display:none"></span>
+<nav>
+<button data-t="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="6.5"/><path d="M19 19l-4.3-4.3"/></svg><span>Check</span></button>
+<button data-t="auction"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4l6 6"/><rect x="2.5" y="7.5" width="8" height="4" rx="1" transform="rotate(-45 6.5 9.5)"/><path d="M4 15l5-5"/><path d="M3 21h9"/><path d="M15 5l4 4"/></svg><span>Auction</span></button>
+<button data-t="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><span>Reports</span></button>
+<button data-t="viewing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6a1 1 0 011 1v1H8V4a1 1 0 011-1z"/><path d="M8.5 12.5l2 2 4-4.5"/><path d="M8.5 17h7"/></svg><span>Viewing</span></button>
+<button data-t="stock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16l1.5-6.5A2 2 0 017.4 8h9.2a2 2 0 011.9 1.5L20 16"/><rect x="3" y="16" width="18" height="4" rx="1.5"/><circle cx="7.5" cy="20" r="1.4"/><circle cx="16.5" cy="20" r="1.4"/></svg><span>In stock</span></button>
+<button data-t="sold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 7-9 9-7-7 9-9z"/><circle cx="9.3" cy="8.7" r="1.4"/><path d="M4 13V6a1 1 0 011-1h7"/></svg><span>Sold</span></button>
+</nav>
+<div id="app"></div>
+</main>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+// ---------- CONFIG: fill these in from your Supabase project ----------
+const SUPABASE_URL = "https://surgppobaxxhvcqkfozf.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_L-MMYLMJYYKybw4Xx6SVUQ_1Avippfs";
+// The Edge Function URL is derived from SUPABASE_URL automatically.
+// -----------------------------------------------------------------------
+
+const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const f=n=>(n<0?'-':'')+'£'+Math.abs(Math.round(n)).toLocaleString('en-GB');
-const def=()=>({v:2,lastBackup:0,cars:[],short:[],active:null,notes:{},chk:{},fuel:'Petrol',gear:'Manual',draft:{model:'',reg:'',note:'',ask:'',oth:150,sale:'',days:21,tgt:500,repairs:[]}});
-let st=def(),tab='check',selId=0,open={s0:true},rmArm=0,slArm=0;
-const migrate=o=>{o.v=o.v||1;if(o.v<2){o.short=o.short||[];o.active=null;o.draft=o.draft||def().draft;o.draft.note=o.draft.note||'';o.v=2}o.short=o.short||[];if(o.draft){o.draft.hammer=o.draft.hammer||'';o.draft.vatIndem=!!o.draft.vatIndem}(o.short||[]).forEach(x=>{if(x.draft){x.draft.hammer=x.draft.hammer||'';x.draft.vatIndem=!!x.draft.vatIndem}});return o};
-const linkActive=()=>{const x=st.active&&st.short.find(y=>y.id===st.active);if(x){st.draft=x.draft;st.chk=x.chk;st.fuel=x.fuel;st.gear=x.gear}else st.active=null};
-try{const s=localStorage.getItem('carflip.v1');if(s)st=migrate(Object.assign(def(),JSON.parse(s)));linkActive()}catch(e){}
-try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
-const save=()=>{try{const x=st.active&&st.short.find(y=>y.id===st.active);if(x){x.draft=st.draft;x.chk=st.chk;x.fuel=st.fuel;x.gear=st.gear}localStorage.setItem('carflip.v1',JSON.stringify(st))}catch(err){}};
+
+let sb = null;
+if(!SUPABASE_URL.startsWith('YOUR_') && !SUPABASE_ANON_KEY.startsWith('YOUR_')){
+  sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} else {
+  $('#notconfigured').style.display='';
+  $('#login').disabled = true;
+}
+
+const blankDraft=()=>({model:'',reg:'',note:'',mileage:'',ask:'',oth:0,sale:'',tgt:500,repairs:[],hammer:'',vatIndem:false,historyCheck:null,historyCheckedAt:null,valuation:null,valuationAt:null});
+let st = { short:[], cars:[], notes:{}, active:null, draft:blankDraft(), chk:{}, fuel:'Petrol', gear:'Manual' };
+let tab='check', selId=null, open={s0:true}, rmArm=0, slArm=0, saveTimer=null, lookupBusy=false, lookupMsg='', historyBusy=false, valuationBusy=false;
+
 const WILSONS=[[0,199,110],[200,399,220],[400,599,242],[600,799,330],[800,999,353],[1000,1199,375],[1200,1399,392],[1400,1599,407],[1600,1799,423],[1800,1999,440],[2000,2199,473],[2200,2399,480],[2400,2599,486],[2600,2799,501],[2800,2999,507],[3000,3199,512],[3200,3399,518],[3400,3599,524],[3600,3799,531],[3800,3999,539],[4000,4199,550],[4200,4399,560],[4400,4599,570],[4600,4799,580],[4800,4999,590],[5000,5499,600],[5500,5999,611],[6000,6499,616],[6500,6999,638],[7000,7499,660],[7500,7999,682],[8000,8499,704],[8500,8999,726],[9000,9499,748],[9500,9999,770],[10000,10999,803],[11000,11999,847],[12000,12999,891],[13000,13999,935],[14000,14999,979],[15000,15999,1018],[16000,16999,1040],[17000,17999,1062],[18000,18999,1084],[19000,19999,1105],[20000,20999,1133],[21000,21999,1188],[22000,22999,1260],[23000,23999,1370],[24000,24999,1480],[25000,25999,1590],[26000,26999,1700],[27000,27999,1810],[28000,28999,1920],[29000,29999,2030],[30000,30999,2140]];
 const indemFor=h=>{const b=WILSONS.find(r=>h>=r[0]&&h<=r[1]);return b?b[2]:null};
 const mets=a=>`<div class="g2">${a.map(x=>`<div class="m"><span>${x[0]}</span><b${x[2]?` class="${x[2]}"`:''}>${x[1]}</b></div>`).join('')}</div>`;
-const ban=(g,t)=>`<div class="ban ${g}">${t}</div>`;
+const BANICON={ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/></svg>',bad:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8l5-5z"/><path d="M12 8v5"/><circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/></svg>',wn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9.5 16.5H2.5L12 3.5z"/><path d="M12 10v4.5"/><circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"/></svg>','':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11.5v5"/></svg>'};
+const ban=(g,t)=>`<div class="ban ${g}">${BANICON[g]||BANICON['']}<span>${t}</span></div>`;
 const S=[
 ["Ask the seller",["Two keys available","Any accidents or known faults","!Happy for a cold start and proper test drive"]],
 ["History check",["!MOT mileage climbs consistently","Repeated MOT advisories","!Finance, write-off, stolen check clear"]],
@@ -74,38 +121,136 @@ const PAY=["Funds cleared in your account, not just a screenshot","Buyer's ID se
 const mk=(t,k)=>({k,w:t[0]==='!',t:t[0]==='!'?t.slice(1):t});
 function secs(){const r=S.map((s,i)=>({k:'s'+i,n:s[0],it:s[1].map((t,j)=>mk(t,'s'+i+'-'+j))}));r.push({k:'f'+st.fuel,n:st.fuel+' checks',it:F[st.fuel].map((t,j)=>mk(t,'f'+st.fuel+j))});if(st.fuel!=='Electric')r.push({k:'g'+st.gear,n:st.gear+' gearbox',it:G[st.gear].map((t,j)=>mk(t,'g'+st.gear+j))});return r}
 const ck=k=>st.chk[k]||(st.chk[k]={s:'',c:'',n:''});
-function calc(d){const ask=+d.ask||0,oth=+d.oth||0,sale=+d.sale||0,days=+d.days||0,tgt=+d.tgt||0;const rep=d.repairs.reduce((s,r)=>s+r.a,0),buf=rep*1.1,hold=days*4,net=sale*.95,cost=ask+buf+oth+hold,profit=net-cost;return{ask,sale,rep,profit,roi:cost?profit/cost*100:0,pd:days?profit/days:0,max:net-buf-oth-hold-tgt}}
-const days=c=>Math.max(1,Math.round(((c.soldTs||Date.now())-c.start)/864e5));
-const cost=c=>c.bought+c.rep+c.other+days(c)*4;
-const cur=c=>c.soldPrice!=null?c.soldPrice:c.offers.length?c.offers[c.offers.length-1][1]:c.listed;
+function calc(d){const ask=+d.ask||0,fees=+d.oth||0,sale=+d.sale||0,tgt=+d.tgt||0;const rep=d.repairs.reduce((s,r)=>s+r.a,0),buf=rep*1.1,net=sale*.95,cost=ask+buf+fees,profit=net-cost;return{ask,sale,rep,fees,otd:ask+fees,profit,roi:cost?profit/cost*100:0,max:net-buf-fees-tgt}}
+const daysHeld=c=>Math.max(1,Math.round(((c.soldTs||Date.now())-c.start)/864e5));
+const costOf=c=>c.bought+c.rep+c.other+daysHeld(c)*4;
+const curPrice=c=>c.soldPrice!=null?c.soldPrice:c.offers.length?c.offers[c.offers.length-1][1]:c.listed;
 const sCar=()=>st.cars.find(c=>c.id===selId&&c.soldPrice==null)||st.cars.find(c=>c.soldPrice==null);
 const nf=(k,l)=>`<label>${l}<input data-d="${k}" type="number" inputmode="decimal" value="${esc(st.draft[k])}"></label>`;
-function slCard(){if(!st.short.length)return '';return `<div class="card"><h2>Shortlist <small>${st.short.length} car${st.short.length>1?'s':''}</small></h2>${st.short.map(x=>{const c=calc(x.draft),v=!c.ask||!c.sale?'Needs prices':c.ask<=c.max?'Worth viewing':'Over by '+f(c.ask-c.max),k=!c.ask||!c.sale?'':c.ask<=c.max?'t-ok':'t-bad';return `<button class="lb${x.id===st.active?' sel2':''}" data-a="opensl" data-id="${x.id}"><b>${esc(x.draft.model||'Unnamed')}</b> <small>${esc(x.draft.reg||'')}</small><br><small>${c.ask?'Asking '+f(c.ask)+' · ':''}${c.sale?'Max bid '+f(c.max)+' · ':''}<span class="${k}">${v}</span></small></button>`}).join('')}</div>`}
+const ADVISORY_RULES=[
+  [/\bhas (?:a |an )?(?:minor |major )?leaks? of [\w\s]+/i,'leak'],
+  [/\bhas (?:a |an )?(?:minor |major )?leaks?\b.*/i,'leak'],
+  [/\b(?:slightly )?damaged\/cracking or perishing.*/i,'damaged/cracking'],
+  [/\bworn close to (?:the )?legal limit.*/i,'worn'],
+  [/\bworn on edge.*/i,'worn'],
+  [/\bbelow requirements\b.*/i,'low'],
+  [/\bfractured or broken.*/i,'broken'],
+  [/\binoperative.*/i,''],
+  [/\bnot working.*/i,''],
+  [/\bdefective\b.*/i,''],
+  [/\bfluctuating.*/i,'fluctuating'],
+  [/\bexcessively damaged or deteriorated.*/i,'damaged'],
+  [/\bcorroded\b.*/i,'corroded'],
+  [/\binsecure\b.*/i,'loose'],
+  [/\bmissing\b.*/i,'missing'],
+];
+function shortAdvisory(raw){
+  let t=String(raw).split(/\(\d+\.\d+/)[0].trim();
+  for(const[re,repl] of ADVISORY_RULES){if(re.test(t)){t=t.replace(re,repl);break}}
+  return t.replace(/[\s,]+$/,'').trim();
+}
+function slCard(){if(!st.short.length)return '';return `<div class="card"><h2>Shortlist <small>${st.short.length} car${st.short.length>1?'s':''}</small></h2>${st.short.map(x=>{const c=calc(x.draft),v=!c.ask||!c.sale?'Needs prices':c.ask<=c.max?'Worth viewing':'Over by '+f(c.ask-c.max),k=!c.ask||!c.sale?'':c.ask<=c.max?'t-ok':'t-bad';return `<button class="lb${x.id===st.active?' sel2':''}" data-a="opensl" data-id="${x.id}"><b>${esc(x.draft.model||'Unnamed')}</b> <small>${esc(x.draft.reg||'')}</small>${x.source==='alert'?' <small class="t-ok">from alert</small>':''}<br><small>${c.ask?'Asking '+f(c.ask)+' · ':''}${c.sale?'Max bid '+f(c.max)+' · ':''}<span class="${k}">${v}</span></small></button>`}).join('')}</div>`}
 function vAuction(){const d=st.draft;return `<div class="card"><h2>Auction out-the-door price</h2>
 <label>Hammer price (£)<input data-d="hammer" type="number" inputmode="decimal" value="${esc(d.hammer)}" placeholder="3500"></label>
 <label class="r" style="margin-top:8px;font-size:14px"><input type="checkbox" style="width:auto;margin:0" data-d="vatIndem" ${d.vatIndem?'checked':''}> Fees are also +VAT (check your invoice)</label>
 <div id="auc"></div>
-<button class="pri" data-a="useAuc" style="margin-top:10px">Use as asking price on Check tab</button>
-<small style="display:block;margin-top:8px">Wilsons Auctions indemnity charges, entered by you. Assumes 20% VAT on the hammer price; tick above if the indemnity fee also carries VAT on your invoice. Bands only go up to £30,999 — check with the auction house above that.</small></div>`}
+<button class="pri" data-a="useAuc" style="margin-top:10px">Use in Check tab</button>
+<small style="display:block;margin-top:8px">Fills in the Check tab's asking price with the hammer price plus its VAT, and Auction fees with the indemnity charge plus its VAT. Wilsons Auctions indemnity charges, entered by you. Bands only go up to £30,999 — check with the auction house above that.</small></div>`}
 function vCheck(){const d=st.draft;return slCard()+`<div class="card"><h2>Deal check</h2>
-<label>Reg plate<input class="plate" data-d="reg" value="${esc(d.reg)}" placeholder="AB16 CDE" autocapitalize="characters"></label>
+<label>Reg plate<div class="r"><input class="plate" data-d="reg" value="${esc(d.reg)}" placeholder="AB16 CDE" autocapitalize="characters" style="flex:1"></div></label>
+<button class="sm" data-a="lookup" style="width:100%;margin-top:8px">${lookupBusy?'Looking up…':'Look up this reg (DVLA + MOT)'}</button>
+<p id="lookupmsg" style="font-size:13px;margin:6px 0 0">${esc(lookupMsg)}</p>
 <label style="margin:10px 0">Model<input data-d="model" value="${esc(d.model)}" placeholder="Ford Fiesta 1.0"></label>
+<label style="margin-bottom:10px">Mileage<input data-d="mileage" type="number" inputmode="numeric" value="${esc(d.mileage)}" placeholder="62000"></label>
 <label style="margin-bottom:10px">Listing link, seller, notes<textarea data-d="note" rows="2" placeholder="Link, seller's number, what they said">${esc(d.note||'')}</textarea></label>
-<div class="g2">${nf('ask','Asking or agreed price (£)')}${nf('oth','Other costs (£)')}${nf('sale','Expected sale (£)')}${nf('days','Days to sell')}${nf('tgt','Target profit (£)')}</div></div>
-<div class="card"><h2>Repairs <span id="reptot"></span></h2><div id="replist"></div><div class="r" style="margin-top:8px"><input id="rn" placeholder="Clutch"><input id="ra" type="number" inputmode="numeric" placeholder="£" style="width:90px"><button class="sm" data-a="addrep" aria-label="Add repair">+</button></div><small id="rerr" class="t-bad"></small></div>
-<div id="res"></div>${st.active?'<small>On your shortlist. Changes save automatically.</small>':'<button class="sm" data-a="saveSl" style="width:100%;margin-bottom:8px">Save to shortlist</button>'}
+<div class="g2">${nf('ask','Asking or agreed price (£)')}${nf('sale','Expected sale (£)')}${nf('oth','Auction fees (£)')}${nf('tgt','Target profit (£)')}</div><small>Auction fees fill in automatically when you use the Auction tab, or type your own.</small><div id="otd" style="margin-top:10px"></div></div>
+<div class="card"><h2>Repairs <span id="reptot"></span></h2><div id="replist"></div><div class="r" style="margin-top:8px"><input id="rn" placeholder="Clutch"><input id="ra" type="number" inputmode="numeric" placeholder="£" style="width:90px"><button class="sm" data-a="addrep" aria-label="Add repair">+</button></div><div class="r" style="margin-top:8px"><button class="sm" data-a="adddelivery">+ Delivery (£80)</button></div><small id="rerr" class="t-bad"></small></div>
+<div id="res"></div>
 <button class="pri" data-a="buy" style="margin-top:8px">Bought it: add to In stock</button><small id="berr" class="t-bad"></small>
-<div class="r" style="margin-top:12px"><button class="sm" data-a="newdeal">New deal</button>${st.active?`<button class="sm" data-a="rmsl">${slArm===st.active?'Tap again to remove':'Remove from shortlist'}</button>`:''}</div>`}
+<div class="r" style="margin-top:12px"><button class="sm" data-a="newdeal">New deal</button>${st.active?`<button class="sm" data-a="rmsl">${slArm===st.active?'Tap again to remove':'Remove from shortlist'}</button>`:''}</div>
+<div class="card" style="margin-top:12px"><h2>Full history check</h2><div id="hist"></div></div>
+<div class="card"><h2>Valuation</h2><div id="val"></div></div>`}
 function updAuc(){const d=st.draft,h=+d.hammer||0,e=$('#auc');if(!e)return;
 if(!h){e.innerHTML='<small>Enter the hammer price to work out fees.</small>';return}
 const idm=indemFor(h);
 if(idm==null){e.innerHTML=ban('wn','No banded fee above £30,999 in this table. Ask the auction house for the charge on this lot.');return}
 const vatH=h*.2,vatI=d.vatIndem?idm*.2:0,total=h+vatH+idm+vatI;
 e.innerHTML=mets([['Indemnity charge',f(idm)],['VAT on hammer (20%)',f(vatH)],['VAT on indemnity',d.vatIndem?f(vatI):'—'],['Out-the-door total',f(total),'t-bad']])}
-function updCheck(){if(!$('#res'))return;const d=st.draft,c=calc(d);
+function updCheck(){if(!$('#res'))return;const d=st.draft,c=calc(d);updHist();updVal();
 $('#reptot').textContent=f(c.rep);
-$('#replist').innerHTML=d.repairs.length?d.repairs.map((r,i)=>`<div class="li"><span>${esc(r.n)}</span><span>${f(r.a)} <button class="sm" data-a="delrep" data-i="${i}" aria-label="Remove ${esc(r.n)}">×</button></span></div>`).join(''):'<small>No repairs yet. Add each job with its cost.</small>';
-$('#res').innerHTML=(!c.ask||!c.sale)?ban('wn','Enter the asking price and expected sale price to see the verdict.'):(c.ask<=c.max?ban('ok',`Asking price is ${f(c.max-c.ask)} under your max bid. Worth viewing.`):ban('bad',`Asking price is ${f(c.ask-c.max)} over your max bid. Offer ${f(c.max)} or walk away.`))+mets([['Profit',f(c.profit),c.profit>=0?'t-ok':'t-bad'],['ROI',c.roi.toFixed(1)+'%'],['Profit per day',f(c.pd)],['Max bid',f(c.max)]])+'<small>Assumes a 5% haggle off the sale price, a 10% repair buffer and £4 a day holding cost.</small>'}
+$('#otd').innerHTML=(c.ask||c.fees)?mets([['Out the door',f(c.otd)]]):'';$('#replist').innerHTML=d.repairs.length?d.repairs.map((r,i)=>`<div class="li"><input type="text" data-repn="${i}" value="${esc(r.n)}" style="flex:1;margin:0;padding:7px 8px;border:0;background:none" aria-label="Repair name"><span class="r" style="gap:6px">£<input type="number" inputmode="decimal" data-rep="${i}" value="${r.a}" style="width:74px;margin:0;padding:7px 8px" aria-label="${esc(r.n)} cost"><button class="sm" data-a="delrep" data-i="${i}" aria-label="Remove ${esc(r.n)}">×</button></span></div>`).join(''):'<small>No repairs yet. Add each job with its cost.</small>';
+$('#res').innerHTML=(!c.ask||!c.sale)?ban('wn','Enter the asking price and expected sale price to see the verdict.'):(c.ask<=c.max?ban('ok',`Asking price is ${f(c.max-c.ask)} under your max bid. Worth viewing.`):ban('bad',`Asking price is ${f(c.ask-c.max)} over your max bid. Offer ${f(c.max)} or walk away.`))+mets([['Profit',f(c.profit),c.profit>=0?'t-ok':'t-bad'],['ROI',c.roi.toFixed(1)+'%'],['Auction fees',f(c.fees)],['Max bid',f(c.max)]])+'<small>Assumes a 5% haggle off the sale price and a 10% repair buffer.</small>'}
+function updHist(){
+  const e=$('#hist');if(!e)return;
+  const d=st.draft;
+  if(historyBusy){e.innerHTML='<button class="pri" disabled>Checking…</button>';return}
+  if(!d.reg.trim()){e.innerHTML='<small>Enter a reg plate above first.</small>';return}
+  if(!d.historyCheck){
+    e.innerHTML='<p style="font-size:14px;margin:0 0 10px">Checks for outstanding finance, stolen and write-off status. Costs £1.82 each time you run it.</p><button class="pri" data-a="runhist">Run full history check (£1.82)</button>';
+    return;
+  }
+  const h=d.historyCheck;
+  if(h.configured===false){e.innerHTML=ban('wn',"History check isn't set up yet.");return}
+  if(h.error){e.innerHTML=ban('bad','Could not run the check: '+esc(h.error))+'<button class="sm" data-a="runhist" style="margin-top:8px">Try again (£1.82)</button>';return}
+  if(h.found===false){e.innerHTML=ban('wn','No history record found for that plate.')+'<button class="sm" data-a="runhist" style="margin-top:8px">Try again (£1.82)</button>';return}
+  const bad=h.stolen||h.finance||h.writeOff;
+  e.innerHTML=ban(bad?'bad':'ok',bad?'Issues found on this car\u2019s history.':'Clear on stolen, finance and write-off records.')+'<button class="pri" data-a="viewhist">View full history</button>';
+}
+function vf(n){return n>0?f(n):'—'}
+function fmtD(x){const dt=new Date(x);return isNaN(dt)?esc(x):dt.toLocaleDateString('en-GB')}
+function updVal(){
+  const e=$('#val');if(!e)return;
+  const d=st.draft,v=d.valuation,mi=+d.mileage||0;
+  if(valuationBusy){e.innerHTML='<button class="pri" disabled>Checking…</button>';return}
+  if(!d.reg.trim()){e.innerHTML='<small>Enter a reg plate above first.</small>';return}
+  if(!v){
+    e.innerHTML=mi?'<p style="font-size:14px;margin:0 0 10px">Reference prices for this car: dealer, private and auction. Costs 12p each time you run it.</p><button class="pri" data-a="runval">Get valuation (12p)</button>':'<small>Enter the mileage above first. The valuation depends on it.</small>';
+    return;
+  }
+  if(v.configured===false){e.innerHTML=ban('wn',"Valuation isn't set up yet.");return}
+  if(v.error){e.innerHTML=ban('bad','Could not run the valuation: '+esc(v.error))+'<button class="sm" data-a="runval" style="margin-top:8px">Try again (12p)</button>';return}
+  if(v.found===false){e.innerHTML=ban('wn','No valuation available for that plate.')+'<button class="sm" data-a="runval" style="margin-top:8px">Try again (12p)</button>';return}
+  const x=v.values||{};
+  e.innerHTML=mets([['Private (average)',vf(x.privateAverage)],['Auction',vf(x.auction)]])+'<button class="pri" data-a="viewval">View valuation</button>';
+}
+function vHistory(){const d=st.draft;return `<div class="card"><h2>${esc(d.model||'No car selected')} <small>${esc(d.reg)}</small></h2></div><div class="card"><h2>History check</h2><div id="histfull"></div></div><div class="card"><h2>Valuation</h2><div id="valfull"></div></div>`}
+function updHistFull(){
+  const e=$('#histfull');if(!e)return;
+  const d=st.draft;
+  const h=d.historyCheck;
+  if(!h||!h.found){e.innerHTML='<small>Run a history check from the Check tab first.</small>';return}
+  const rows=(label,items,fields)=>items&&items.length?`<h2 style="font-size:15px;margin:14px 0 6px">${label}</h2>`+items.map(it=>`<div class="li" style="display:block"><small>${fields.map(([k,l,t])=>it[k]!=null?`${l}: ${t==='d'?fmtD(it[k]):esc(it[k])}`:'').filter(Boolean).join(' \u00b7 ')}</small></div>`).join(''):'';
+  const banners=[
+    h.stolen?ban('bad','Reported stolen — do not buy.'):'',
+    h.finance?ban('bad','Outstanding finance recorded — do not buy without checking further.'):'',
+    h.writeOff?ban('wn','Write-off recorded — check the category and damage before buying.'):'',
+    (!h.stolen&&!h.finance&&!h.writeOff)?ban('ok','Clear on stolen, finance and write-off records.'):''
+  ].join('');
+  const when=d.historyCheckedAt?new Date(d.historyCheckedAt).toLocaleDateString('en-GB'):'';
+  e.innerHTML=banners
+    +mets([['Previous keepers',h.previousKeepers??'—'],['Plate changes',h.plateChanges??'—'],['V5C certificates',h.v5cCount??'—']])
+    +rows('Stolen record',h.stolenDetails,[['forcename','Force'],['creationdate','Reported','d'],['status','Status']])
+    +rows('Finance record',h.financeDetails,[['financecompany','Lender'],['contactnumber','Lender phone'],['agreementnumber','Agreement no.'],['agreementtype','Type'],['dateofagreement','Agreed','d'],['agreementterminmonths','Term (months)']])
+    +rows('Write-off record',h.writeOffDetails,[['insurername','Insurer'],['status','Category'],['lossdate','Loss date','d'],['causeofdamage','Cause']])
+    +rows('Plate changes',h.plateChangeList,[['PreviousVRM','From'],['CurrentVRM','To'],['DateOfTransaction','Date','d']])
+    +`<small style="display:block;margin-top:10px">Checked ${when}.</small><button class="sm" data-a="runhist" style="margin-top:8px">Run again (£1.82)</button>`;
+}
+function updValFull(){
+  const e=$('#valfull');if(!e)return;
+  const d=st.draft,v=d.valuation;
+  if(valuationBusy){e.innerHTML='<button class="pri" disabled>Checking…</button>';return}
+  if(!v||!v.found){e.innerHTML='<small>Run a valuation from the Check tab first.</small>';return}
+  const x=v.values||{};
+  const when=d.valuationAt?new Date(d.valuationAt).toLocaleDateString('en-GB'):'';
+  e.innerHTML=`<small style="display:block;margin-bottom:10px">${esc(v.description||'')}<br>Valued at ${esc(v.valuedAtMileage||'?')} miles</small>`
+    +'<h2 style="font-size:15px;margin:4px 0 8px">What it would sell for</h2>'
+    +mets([['Dealer forecourt',vf(x.dealerForecourt)],['Trade retail',vf(x.tradeRetail)],['Private (clean)',vf(x.privateClean)],['Private (average)',vf(x.privateAverage)]])
+    +'<h2 style="font-size:15px;margin:14px 0 8px">What you could sell it on for</h2>'
+    +mets([['Part exchange',vf(x.partExchange)],['Auction',vf(x.auction)],['Trade average',vf(x.tradeAverage)],['Trade poor',vf(x.tradePoor)]])
+    +'<h2 style="font-size:15px;margin:14px 0 8px">Reference</h2>'
+    +mets([['New price (OTR)',vf(x.otr)]])
+    +`<small style="display:block;margin-top:6px">Checked ${when}. Reference figures only. Your Expected sale is not changed.</small><button class="sm" data-a="runval" style="margin-top:8px">Run again (12p)</button>`;
+}
 function vView(){const d=st.draft,ns=st.notes[d.model||'_']||'';
 let h=`<div class="card"><h2>${esc(d.model||'No model set')} <small>${esc(d.reg)}</small></h2>
 ${st.short.length?`<label style="margin-bottom:10px">Switch car<select id="sw">${st.active?'':'<option value="0" selected>Unsaved deal</option>'}${st.short.map(x=>`<option value="${x.id}"${x.id===st.active?' selected':''}>${esc(x.draft.model||'Unnamed')} ${esc(x.draft.reg||'')}</option>`).join('')}</select></label>`:''}
@@ -121,65 +266,206 @@ function updChk(){const all=secs().flatMap(s=>s.it),iss=all.filter(i=>ck(i.k).s=
 $('#csum').innerHTML=(w?ban('bad',`Walk-away flag: ${esc(w.t)}. Don't buy unless the seller resolves it.`):iss.length?ban('wn',`${iss.length} issue${iss.length>1?'s':''} found. Add fix costs, then send them to your repair list.`):dn===all.length?ban('ok','All checks passed with no issues.'):ban('','Open a section and tap OK, Issue or Unsure on each check.'))+mets([['Checked',dn+'/'+all.length],['Issues',iss.length],['Fix costs',f(tot)]])}
 function vStock(){const L=st.cars.filter(c=>c.soldPrice==null);if(!L.length)return '<div class="card"><h2>In stock</h2><small>No cars yet. Run a deal on the Check tab, then tap "Bought it".</small></div>';
 const c=sCar();selId=c.id;const nfc=(k,l)=>`<label>${l}<input type="number" inputmode="numeric" data-cf="${k}" value="${c[k]}"></label>`;
-return `<div class="card"><h2>In stock <small>${L.length} car${L.length>1?'s':''}</small></h2>${L.map(x=>`<button class="lb${x.id===c.id?' sel2':''}" data-a="sel" data-id="${x.id}"><b>${esc(x.model)}</b><br><small>${esc(x.reg)} · ${days(x)} days · ${f(cost(x))} in</small></button>`).join('')}</div>
+return `<div class="card"><h2>In stock <small>${L.length} car${L.length>1?'s':''}</small></h2>${L.map(x=>`<button class="lb${x.id===c.id?' sel2':''}" data-a="sel" data-id="${x.id}"><b>${esc(x.model)}</b><br><small>${esc(x.reg)} · ${daysHeld(x)} days · ${f(costOf(x))} in</small></button>`).join('')}</div>
 <div class="card"><h2>${esc(c.model)} <small>${esc(c.reg)}</small></h2>
 <div class="g2">${nfc('bought','Bought (£)')}${nfc('rep','Repairs so far (£)')}${nfc('other','Other costs (£)')}${nfc('listed','Listed price (£)')}${nfc('target','Target profit (£)')}</div><small>Repairs you estimated when you bought: ${f(c.repEst)}</small>
-<h2 style="margin-top:14px">Offers</h2>${c.offers.map(o=>`<div class="li"><span>${o[0]} ${f(o[1])}</span><span class="${o[1]-cost(c)>=c.target?'t-ok':'t-bad'}">${f(o[1]-cost(c))} profit</span></div>`).join('')||'<small>No offers yet.</small>'}
+<h2 style="margin-top:14px">Offers</h2>${c.offers.map(o=>`<div class="li"><span>${o[0]} ${f(o[1])}</span><span class="${o[1]-costOf(c)>=c.target?'t-ok':'t-bad'}">${f(o[1]-costOf(c))} profit</span></div>`).join('')||'<small>No offers yet.</small>'}
 <div class="r" style="margin-top:8px"><select id="ow" style="width:auto"><option>Buyer offer</option><option>Your counter</option></select><input id="oa" type="number" inputmode="numeric" placeholder="£"><button class="sm" data-a="offer">Log</button></div><small id="oerr" class="t-bad"></small>
 <div id="cd" style="margin-top:12px"></div>
 <h2>Before you hand over the keys</h2>${PAY.map((p,i)=>`<label class="r" style="font-size:15px;color:var(--tx);margin:6px 0"><input type="checkbox" style="width:auto;margin:0" data-pay="${i}" ${c.pay[i]?'checked':''}>${p}</label>`).join('')}<div id="pw"></div>
 <button class="pri" data-a="sold" style="margin:10px 0">Mark sold</button>
 <button class="sm" data-a="rm">${rmArm===c.id?'Tap again to remove this car':'Remove car'}</button></div>`}
-function updCar(){const c=sCar();if(!c||!$('#cd'))return;const k=cost(c),fl=k+c.target,cu=cur(c),p=cu-k;
+function updCar(){const c=sCar();if(!c||!$('#cd'))return;const k=costOf(c),fl=k+c.target,cu=curPrice(c),p=cu-k;
 $('#cd').innerHTML=(cu>=fl?ban('ok',`${f(cu-fl)} above your lowest price. Profit ${f(p)}.`):ban('bad',`${f(fl-cu)} below your lowest price. Counter at ${f(fl)} or more.`))+mets([['Profit at '+f(cu),f(p),p>=0?'t-ok':'t-bad'],['Lowest you\'d accept',f(fl)]])+`<small>Total cost ${f(k)} including £4 a day holding.</small>`;
 $('#pw').innerHTML=c.pay.every(Boolean)?'':'<small>Not all payment checks ticked yet.</small>'}
-function vSold(){const L=st.cars.filter(c=>c.soldPrice!=null).sort((a,b)=>b.soldTs-a.soldTs),pr=c=>c.soldPrice-cost(c);let h='';
-if(L.length){const t=L.reduce((s,c)=>s+pr(c),0),d=L.reduce((s,c)=>s+days(c),0)/L.length,o=L.reduce((s,c)=>s+c.rep-c.repEst,0)/L.length;
-h+=mets([['Total profit',f(t),t>=0?'t-ok':'t-bad'],['Cars sold',L.length],['Avg profit per car',f(t/L.length)],['Avg days to sell',Math.round(d)]])+ban(o>0?'wn':'ok',o>0?`Your repair estimates ran ${f(o)} under the real cost per car on average.`:'Your repair estimates are at or under real costs on average.')+'<div class="card">'+L.map(c=>`<div class="li"><span><b>${esc(c.model)}</b><br><small>${esc(c.reg)} · ${f(c.bought)} → ${f(c.soldPrice)} · ${days(c)} days<br>Repairs: est ${f(c.repEst)}, actual ${f(c.rep)}</small></span><b class="${pr(c)>=0?'t-ok':'t-bad'}">${f(pr(c))}</b></div>`).join('')+'</div>'}
+function vSold(){const L=st.cars.filter(c=>c.soldPrice!=null).sort((a,b)=>b.soldTs-a.soldTs),pr=c=>c.soldPrice-costOf(c);let h='';
+if(L.length){const t=L.reduce((s,c)=>s+pr(c),0),d=L.reduce((s,c)=>s+daysHeld(c),0)/L.length,o=L.reduce((s,c)=>s+c.rep-c.repEst,0)/L.length;
+h+=mets([['Total profit',f(t),t>=0?'t-ok':'t-bad'],['Cars sold',L.length],['Avg profit per car',f(t/L.length)],['Avg days to sell',Math.round(d)]])+ban(o>0?'wn':'ok',o>0?`Your repair estimates ran ${f(o)} under the real cost per car on average.`:'Your repair estimates are at or under real costs on average.')+'<div class="card">'+L.map(c=>`<div class="li"><span><b>${esc(c.model)}</b><br><small>${esc(c.reg)} · ${f(c.bought)} → ${f(c.soldPrice)} · ${daysHeld(c)} days<br>Repairs: est ${f(c.repEst)}, actual ${f(c.rep)}</small></span><b class="${pr(c)>=0?'t-ok':'t-bad'}">${f(pr(c))}</b></div>`).join('')+'</div>'}
 else h+='<div class="card"><small>Sold cars appear here with profit and days to sell.</small></div>';
-return h+`<div class="card"><h2>Backup</h2><small>Your data lives in this browser only. Download a backup now and then and keep it somewhere safe.</small><div class="r" style="margin:8px 0"><button class="sm" data-a="dl">Download backup file</button><button class="sm" data-a="bk">Show as text</button></div><small>${st.lastBackup?'Last backup: '+new Date(st.lastBackup).toLocaleDateString('en-GB'):'No backup yet.'}</small><textarea id="bkt" rows="3" readonly placeholder="Backup appears here. Select all and copy."></textarea><label style="margin-top:8px">Restore: paste a backup here<textarea id="rst" rows="3"></textarea></label><label style="margin-top:8px">Or restore from a backup file<input type="file" id="rf" accept=".json,application/json"></label><div class="r" style="margin-top:8px"><button class="sm" data-a="rs">Restore</button></div><small id="bmsg"></small></div>`}
-function autoSave(){if(!st.active&&(st.draft.model.trim()||+st.draft.ask))st.short.push({id:Date.now(),draft:st.draft,chk:st.chk,fuel:st.fuel,gear:st.gear})}
-function openDeal(id){save();autoSave();const x=st.short.find(y=>y.id===id);if(!x)return;st.active=id;st.draft=x.draft;st.chk=x.chk;st.fuel=x.fuel;st.gear=x.gear;save()}
-function newDeal(){save();autoSave();const n=def();st.active=null;st.draft=n.draft;st.chk={};st.fuel='Petrol';st.gear='Manual';save()}
-function bkNote(){if(!st.cars.length&&!st.short.length)return '';const d=st.lastBackup?Math.floor((Date.now()-st.lastBackup)/864e5):-1;if(d>=0&&d<7)return '';return '<button class="ban wn" data-a="gosold">'+(d<0?"You haven't backed up yet.":'Last backup was '+d+' days ago.')+' Tap to back up.</button>'}
-function doRestore(t){try{const o=JSON.parse(t);if(!o||!Array.isArray(o.cars))throw 0;st=migrate(Object.assign(def(),o));linkActive();save();render();$('#bmsg').textContent='Restored.'}catch(x){const m=$('#bmsg');if(m)m.textContent='That backup could not be read. Use the full file or text you saved.'}}
-function render(){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));app.innerHTML=(tab!=='sold'?bkNote():'')+{check:vCheck,auction:vAuction,viewing:vView,stock:vStock,sold:vSold}[tab]();if(tab==='check')updCheck();if(tab==='auction')updAuc();if(tab==='viewing')updChk();if(tab==='stock')updCar()}
+return h+`<div class="card"><h2>Your account</h2><small>Signed in as ${esc(st.email||'')}. Your data lives in your Supabase project, not this device, so it's the same on your phone and laptop.</small>
+<div class="r" style="margin-top:10px"><button class="sm" data-a="export">Export as JSON</button><button class="sm" data-a="logout">Sign out</button></div></div>`}
+function setPill(state){const p=$('#savepill');if(!p)return;if(state==='idle'){p.style.display='none';return}p.style.display='';p.className='savepill '+state;p.textContent=state==='pending'?'Saving…':state==='saved'?'Saved':'Save failed — check your connection'}
+
+async function loadAll(){
+  const {data,error}=await sb.from('flip_cars').select('*').order('created_at',{ascending:true});
+  if(error){ setPill('error'); return; }
+  const rows=data||[];
+  st.short=rows.filter(r=>r.status==='shortlist').map(r=>({id:r.id,source:r.source,draft:{model:r.model,reg:r.reg,note:r.note||'',mileage:r.mileage==null?'':r.mileage,ask:r.ask==null?'':r.ask,oth:r.other==null?0:r.other,sale:r.sale==null?'':r.sale,tgt:r.target,repairs:r.repairs||[],hammer:r.hammer==null?'':r.hammer,vatIndem:!!r.vat_indem,historyCheck:r.history_check||null,historyCheckedAt:r.history_checked_at||null,valuation:r.valuation||null,valuationAt:r.valuation_at||null},chk:r.checklist||{},fuel:r.fuel||'Petrol',gear:r.gear||'Manual'}));
+  st.cars=rows.filter(r=>r.status!=='shortlist').map(r=>({id:r.id,model:r.model,reg:r.reg,bought:r.bought||0,repEst:r.rep_est||0,rep:r.rep||0,other:r.other||0,listed:r.listed||0,target:r.target||0,start:r.start?+new Date(r.start):Date.now(),offers:r.offers||[],soldPrice:r.sold_price,soldTs:r.sold_ts?+new Date(r.sold_ts):null,pay:r.pay||[false,false,false,false]}));
+  const {data:nd}=await sb.from('model_notes').select('*');
+  st.notes={}; (nd||[]).forEach(n=>{st.notes[n.model]=n.note});
+  linkActive();
+}
+function linkActive(){const x=st.active&&st.short.find(y=>y.id===st.active);if(x){st.draft=x.draft;st.chk=x.chk;st.fuel=x.fuel;st.gear=x.gear}else st.active=null}
+
+function scheduleSave(){setPill('pending');clearTimeout(saveTimer);saveTimer=setTimeout(flushDraftSave,700)}
+async function flushDraftSave(){
+  clearTimeout(saveTimer);
+  const d=st.draft,hasContent=d.model.trim()||d.reg.trim()||d.ask||d.sale;
+  if(!hasContent&&!st.active){setPill('idle');return}
+  const patch={status:'shortlist',model:d.model.trim(),reg:d.reg.trim().toUpperCase(),note:d.note||'',mileage:d.mileage===''?null:+d.mileage,fuel:st.fuel,gear:st.gear,ask:d.ask===''?null:+d.ask,sale:d.sale===''?null:+d.sale,other:d.oth===''?0:+d.oth,target:d.tgt===''?500:+d.tgt,hammer:d.hammer===''?null:+d.hammer,vat_indem:!!d.vatIndem,repairs:d.repairs,checklist:st.chk,history_check:d.historyCheck,history_checked_at:d.historyCheckedAt,valuation:d.valuation,valuation_at:d.valuationAt};
+  try{
+    if(st.active){const{error}=await sb.from('flip_cars').update(patch).eq('id',st.active);if(error)throw error}
+    else{const{data,error}=await sb.from('flip_cars').insert(patch).select().single();if(error)throw error;st.active=data.id;st.short.push({id:data.id,source:'manual',draft:st.draft,chk:st.chk,fuel:st.fuel,gear:st.gear})}
+    setPill('saved');
+  }catch(e){setPill('error')}
+}
+async function flushNow(){clearTimeout(saveTimer);await flushDraftSave()}
+
+async function openDeal(id){await flushNow();const x=st.short.find(y=>y.id===id);if(!x)return;st.active=id;st.draft=x.draft;st.chk=x.chk;st.fuel=x.fuel;st.gear=x.gear}
+async function newDeal(){await flushNow();st.active=null;st.draft=blankDraft();st.chk={};st.fuel='Petrol';st.gear='Manual'}
+
+let noteTimer=null;
+function scheduleNote(model,text){clearTimeout(noteTimer);noteTimer=setTimeout(()=>saveNote(model,text),700)}
+async function saveNote(model,text){if(!model)return;try{setPill('pending');await sb.from('model_notes').upsert({model,note:text},{onConflict:'user_id,model'});setPill('saved')}catch(e){setPill('error')}}
+
+let stockTimer=null;
+function scheduleStockSave(c){setPill('pending');clearTimeout(stockTimer);stockTimer=setTimeout(()=>saveStockCar(c),500)}
+async function saveStockCar(c){try{const{error}=await sb.from('flip_cars').update({bought:c.bought,rep_est:c.repEst,rep:c.rep,other:c.other,listed:c.listed,target:c.target}).eq('id',c.id);if(error)throw error;setPill('saved')}catch(e){setPill('error')}}
+async function saveStockNow(c,extra){try{setPill('pending');const{error}=await sb.from('flip_cars').update(Object.assign({offers:c.offers,pay:c.pay},extra||{})).eq('id',c.id);if(error)throw error;setPill('saved')}catch(e){setPill('error')}}
+
+async function doLookup(){
+  const reg=st.draft.reg.trim().replace(/\s+/g,'');
+  if(!reg){lookupMsg='Enter a reg plate first.';render();return}
+  lookupBusy=true;lookupMsg='';render();
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    const res=await fetch(`${SUPABASE_URL}/functions/v1/lookup-reg`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},body:JSON.stringify({reg})});
+    const out=await res.json();
+    if(!res.ok){lookupMsg=out.error||'Lookup failed.';return}
+    const bits=[];
+    if(out.dvla&&out.dvla.configured===false)bits.push('DVLA lookup not set up yet.');
+    else if(out.dvla&&out.dvla.found){
+      if(!st.draft.model.trim()){const cc=out.dvla&&out.dvla.engineCC,litres=cc?(Math.round(cc/100)/10).toFixed(1):'',parts=[out.dvla&&out.dvla.make,out.dvsa&&out.dvsa.model,litres].filter(Boolean);if(parts.length)st.draft.model=parts.join(' ')}
+      bits.push(`DVLA: ${[out.dvla.make,out.dvla.colour].filter(Boolean).join(' ')}, MOT ${out.dvla.motStatus||'unknown'}`);
+    } else if(out.dvla&&out.dvla.found===false)bits.push('DVLA: no record for that plate.');
+    if(out.dvsa&&out.dvsa.configured===false)bits.push('MOT history lookup not set up yet.');
+    else if(out.dvsa&&out.dvsa.found){
+      const adv=(out.dvsa.tests||[]).flatMap(t=>t.advisories||[]);
+      if(!st.draft.mileage&&out.dvsa.tests&&out.dvsa.tests.length&&out.dvsa.tests[0].mileage!=null)st.draft.mileage=String(out.dvsa.tests[0].mileage);
+      if(out.dvsa.mileageDrop){const c=ck('s1-0');c.s='issue';c.n='Mileage history shows a drop between tests — check carefully.'}
+      let addedCount=0;
+      const latestAdv=(out.dvsa.tests&&out.dvsa.tests[0]&&out.dvsa.tests[0].advisories)||[];
+      if(latestAdv.length){
+        const existing=new Set(st.draft.repairs.map(r=>r.n));
+        latestAdv.forEach(a=>{
+          const short=shortAdvisory(a);
+          if(short&&!existing.has(short)){st.draft.repairs.push({n:short,a:0});existing.add(short);addedCount++}
+        });
+      }
+      bits.push(addedCount?`MOT: ${addedCount} issue${addedCount>1?'s':''} added to repairs — set a price for each.`:adv.length?`MOT: ${adv.length} issue${adv.length>1?'s':''} on record.`:'MOT: no issues on recent tests.');
+    } else if(out.dvsa&&out.dvsa.found===false)bits.push('MOT: no history found for that plate.');
+    lookupMsg=bits.length?bits.join(' · '):'No extra details came back for that plate.';
+    scheduleSave();
+  }catch(e){lookupMsg="Couldn't reach the lookup service. Check your connection.";}
+  finally{lookupBusy=false;render()}
+}
+
+function render(){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));$('#app').innerHTML={check:vCheck,auction:vAuction,history:vHistory,viewing:vView,stock:vStock,sold:vSold}[tab]();if(tab==='check')updCheck();if(tab==='auction')updAuc();if(tab==='history'){updHistFull();updValFull()}if(tab==='viewing')updChk();if(tab==='stock')updCar()}
 const msg=(t,c)=>{const e=$('#cmsg');if(e){e.textContent=t;e.className=c}};
-app.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const v=b.dataset.v;
+
+$('#app').addEventListener('click',async e=>{const b=e.target.closest('[data-a]');if(!b)return;const v=b.dataset.v;
 switch(b.dataset.a){
-case'useAuc':{const h=+st.draft.hammer||0,idm=indemFor(h);if(!h||idm==null){return}const total=h+h*.2+idm+(st.draft.vatIndem?idm*.2:0);st.draft.ask=String(Math.round(total*100)/100);save();tab='check';render();window.scrollTo(0,0);return}
-case'addrep':{const n=$('#rn').value.trim(),a=parseFloat($('#ra').value);if(!n||!(a>=0)){$('#rerr').textContent='Enter a repair name and amount first.';return}st.draft.repairs.push({n,a});$('#rn').value='';$('#ra').value='';$('#rerr').textContent='';save();updCheck();return}
-case'delrep':st.draft.repairs.splice(+b.dataset.i,1);save();updCheck();return;
+case'lookup':await doLookup();return;
+case'viewhist':tab='history';render();window.scrollTo(0,0);return;
+case'viewval':{tab='history';render();const v=$('#valfull');if(v&&v.scrollIntoView)v.scrollIntoView();else window.scrollTo(0,0);return}
+case'runval':{
+  const reg=st.draft.reg.trim().replace(/\s+/g,''),mi=+st.draft.mileage||0;
+  if(!reg||!mi)return;
+  valuationBusy=true;render();
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    const res=await fetch(`${SUPABASE_URL}/functions/v1/valuation`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},body:JSON.stringify({reg,mileage:mi})});
+    const out=await res.json();
+    st.draft.valuation=out;
+    st.draft.valuationAt=new Date().toISOString();
+  }catch(e){
+    st.draft.valuation={configured:true,found:false,error:"Couldn't reach the service."};
+    st.draft.valuationAt=new Date().toISOString();
+  }finally{
+    valuationBusy=false;render();
+    await flushNow();
+  }
+  return;
+}
+case'runhist':{
+  const reg=st.draft.reg.trim().replace(/\s+/g,'');
+  if(!reg)return;
+  if(!confirm('This checks finance, stolen and write-off status and costs £1.82. Continue?'))return;
+  historyBusy=true;render();
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    const res=await fetch(`${SUPABASE_URL}/functions/v1/history-check`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},body:JSON.stringify({reg})});
+    const out=await res.json();
+    st.draft.historyCheck=out;
+    st.draft.historyCheckedAt=new Date().toISOString();
+  }catch(e){
+    st.draft.historyCheck={configured:true,found:false,error:"Couldn't reach the service."};
+    st.draft.historyCheckedAt=new Date().toISOString();
+  }finally{
+    historyBusy=false;render();
+    await flushNow(); // a real charge just happened — save it right away, not debounced
+  }
+  return;
+}
+case'useAuc':{const h=+st.draft.hammer||0,idm=indemFor(h);if(!h||idm==null)return;const vatH=h*.2,vatI=st.draft.vatIndem?idm*.2:0,r2=x=>Math.round(x*100)/100;st.draft.ask=String(r2(h+vatH));st.draft.oth=String(r2(idm+vatI));scheduleSave();tab='check';render();window.scrollTo(0,0);return}
+case'addrep':{const n=$('#rn').value.trim(),a=parseFloat($('#ra').value);if(!n||!(a>=0)){$('#rerr').textContent='Enter a repair name and amount first.';return}st.draft.repairs.push({n,a});$('#rn').value='';$('#ra').value='';$('#rerr').textContent='';scheduleSave();updCheck();return}
+case'delrep':st.draft.repairs.splice(+b.dataset.i,1);scheduleSave();updCheck();return;
+case'adddelivery':st.draft.repairs.push({n:'Delivery',a:80});scheduleSave();updCheck();return;
 case'buy':{const d=st.draft,c=calc(d);if(!d.model.trim()||!c.ask){$('#berr').textContent='Add the model and asking price first.';return}
-const car={id:Date.now(),model:d.model.trim(),reg:d.reg.trim().toUpperCase(),bought:c.ask,repEst:c.rep,rep:c.rep,other:+d.oth||0,listed:c.sale,target:+d.tgt||0,start:Date.now(),offers:[],soldPrice:null,soldTs:null,pay:[false,false,false,false]};
-st.cars.push(car);if(st.active){st.short=st.short.filter(x=>x.id!==st.active);st.active=null}const nd=def();st.draft=nd.draft;st.chk={};st.fuel='Petrol';st.gear='Manual';selId=car.id;save();tab='stock';render();return}
-case'saveSl':{if(!st.draft.model.trim()){$('#berr').textContent='Add the model first.';return}const x={id:Date.now(),draft:st.draft,chk:st.chk,fuel:st.fuel,gear:st.gear};st.short.push(x);st.active=x.id;save();render();return}
-case'newdeal':newDeal();render();window.scrollTo(0,0);return;
-case'opensl':openDeal(+b.dataset.id);render();return;
-case'rmsl':{if(slArm===st.active){st.short=st.short.filter(x=>x.id!==st.active);st.active=null;const n=def();st.draft=n.draft;st.chk={};st.fuel='Petrol';st.gear='Manual';slArm=0;save()}else slArm=st.active;render();return}
+await flushNow();
+const patch={status:'stock',model:d.model.trim(),reg:d.reg.trim().toUpperCase(),mileage:d.mileage===''?null:+d.mileage,bought:c.ask,rep_est:c.rep,rep:c.rep,other:+d.oth||0,listed:c.sale,target:+d.tgt||0,start:new Date().toISOString(),offers:[],sold_price:null,sold_ts:null,pay:[false,false,false,false]};
+try{
+  let id;
+  if(st.active){const{data,error}=await sb.from('flip_cars').update(patch).eq('id',st.active).select().single();if(error)throw error;id=data.id;st.short=st.short.filter(x=>x.id!==st.active)}
+  else{const{data,error}=await sb.from('flip_cars').insert(patch).select().single();if(error)throw error;id=data.id}
+  st.cars.push({id,model:patch.model,reg:patch.reg,bought:patch.bought,repEst:patch.rep_est,rep:patch.rep,other:patch.other,listed:patch.listed,target:patch.target,start:Date.now(),offers:[],soldPrice:null,soldTs:null,pay:[false,false,false,false]});
+  st.active=null;st.draft=blankDraft();st.chk={};st.fuel='Petrol';st.gear='Manual';selId=id;tab='stock';setPill('saved');render();
+}catch(err){$('#berr').textContent="Couldn't save that — check your connection and try again."}
+return}
+case'newdeal':await newDeal();render();window.scrollTo(0,0);return;
+case'opensl':await openDeal(b.dataset.id);render();return;
+case'rmsl':{if(!st.active)return;if(slArm===st.active){const id=st.active;try{await sb.from('flip_cars').delete().eq('id',id)}catch(err){}st.short=st.short.filter(x=>x.id!==id);st.active=null;st.draft=blankDraft();st.chk={};st.fuel='Petrol';st.gear='Manual';slArm=0}else slArm=st.active;render();return}
 case'sec':open[v]=!open[v];render();return;
-case'fuel':st.fuel=v;save();render();return;
-case'gear':st.gear=v;save();render();return;
-case'set':{const c=ck(b.dataset.k);c.s=c.s===v?'':v;save();render();return}
-case'rstchk':st.chk={};save();render();return;
+case'fuel':st.fuel=v;scheduleSave();render();return;
+case'gear':st.gear=v;scheduleSave();render();return;
+case'set':{const c=ck(b.dataset.k);c.s=c.s===v?'':v;scheduleSave();render();return}
+case'rstchk':st.chk={};if(st.active){const x=st.short.find(y=>y.id===st.active);if(x)x.chk=st.chk}scheduleSave();render();return;
 case'chk2rep':{const ls=secs().flatMap(s=>s.it).filter(i=>ck(i.k).s==='issue'&&!ck(i.k).sent&&(+ck(i.k).c||0)>0);if(!ls.length){msg('Mark an issue and enter its fix cost first.','t-bad');return}
-ls.forEach(i=>{const c=ck(i.k);c.sent=true;st.draft.repairs.push({n:i.t+(c.n?': '+c.n:''),a:+c.c})});save();tab='check';render();return}
-case'sel':selId=+b.dataset.id;rmArm=0;render();return;
-case'offer':{const c=sCar(),a=parseFloat($('#oa').value);if(!(a>0)){$('#oerr').textContent='Enter an offer amount first.';return}c.offers.push([$('#ow').value,a]);save();render();return}
-case'sold':{const c=sCar();c.soldPrice=cur(c);c.soldTs=Date.now();save();render();return}
-case'rm':{const c=sCar();if(rmArm===c.id){st.cars=st.cars.filter(x=>x.id!==c.id);rmArm=0;save()}else rmArm=c.id;render();return}
-case'bk':st.lastBackup=Date.now();save();$('#bkt').value=JSON.stringify(st);$('#bkt').select();return;
-case'rs':doRestore($('#rst').value);return;
-case'dl':{st.lastBackup=Date.now();save();const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(st)],{type:'application/json'}));a.download='carflip-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();render();return}
-case'gosold':tab='sold';render();window.scrollTo(0,0);return}});
-app.addEventListener('input',e=>{const t=e.target,d=t.dataset;
-if(d.d!==undefined){st.draft[d.d]=t.type==='checkbox'?t.checked:t.value;save();if(tab==='auction')updAuc();else updCheck()}
-else if(d.c!==undefined){ck(d.c).c=t.value;save();updChk()}
-else if(d.n!==undefined){ck(d.n).n=t.value;save()}
-else if(d.cf!==undefined){sCar()[d.cf]=+t.value||0;save();updCar()}
-else if(d.note!==undefined){st.notes[st.draft.model||'_']=t.value;save()}});
-app.addEventListener('change',e=>{const t=e.target;if(t.id==='sw'){if(+t.value)openDeal(+t.value);render();return}if(t.id==='rf'){const fl=t.files[0];if(fl)fl.text().then(doRestore);return}const p=t.dataset.pay;if(p!==undefined){sCar().pay[+p]=t.checked;save();updCar()}});
-$('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.t;rmArm=0;slArm=0;render();window.scrollTo(0,0)});
-render();
+ls.forEach(i=>{const c=ck(i.k);c.sent=true;st.draft.repairs.push({n:i.t+(c.n?': '+c.n:''),a:+c.c})});scheduleSave();tab='check';render();return}
+case'sel':selId=b.dataset.id;rmArm=0;render();return;
+case'offer':{const c=sCar(),a=parseFloat($('#oa').value);if(!(a>0)){$('#oerr').textContent='Enter an offer amount first.';return}c.offers.push([$('#ow').value,a]);render();await saveStockNow(c);return}
+case'sold':{const c=sCar();c.soldPrice=curPrice(c);c.soldTs=Date.now();render();await saveStockNow(c,{status:'sold',sold_price:c.soldPrice,sold_ts:new Date(c.soldTs).toISOString()});return}
+case'rm':{const c=sCar();if(rmArm===c.id){try{await sb.from('flip_cars').delete().eq('id',c.id)}catch(err){}st.cars=st.cars.filter(x=>x.id!==c.id);rmArm=0}else rmArm=c.id;render();return}
+case'export':{const blob=new Blob([JSON.stringify({short:st.short,cars:st.cars},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='carflip-export-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();return}
+case'logout':await flushNow();await sb.auth.signOut();location.reload();return;
+}});
+
+$('#app').addEventListener('input',e=>{const t=e.target,d=t.dataset;
+if(d.d!==undefined){st.draft[d.d]=t.type==='checkbox'?t.checked:t.value;if(tab==='auction')updAuc();else{updCheck();scheduleSave()}}
+else if(d.c!==undefined){ck(d.c).c=t.value;updChk();scheduleSave()}
+else if(d.n!==undefined){ck(d.n).n=t.value;scheduleSave()}
+else if(d.rep!==undefined){st.draft.repairs[+d.rep].a=+t.value||0;updCheck();scheduleSave()}
+else if(d.repn!==undefined){st.draft.repairs[+d.repn].n=t.value;scheduleSave()}
+else if(d.cf!==undefined){const c=sCar();c[d.cf]=+t.value||0;updCar();scheduleStockSave(c)}
+else if(d.note!==undefined){st.notes[st.draft.model||'_']=t.value;scheduleNote(st.draft.model||'_',t.value)}});
+
+$('#app').addEventListener('change',async e=>{const t=e.target;
+if(t.id==='sw'){if(t.value&&t.value!=='0'){await openDeal(t.value);render()}return}
+const p=t.dataset.pay;if(p!==undefined){const c=sCar();c.pay[+p]=t.checked;updCar();await saveStockNow(c)}});
+
+document.querySelector('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.t;rmArm=0;slArm=0;render();window.scrollTo(0,0)});
+
+// ---------- Auth ----------
+async function showApp(){$('#gate').style.display='none';$('#main').style.display='';setPill('pending');await loadAll();setPill('idle');render()}
+async function checkSession(){if(!sb)return;const{data:{session}}=await sb.auth.getSession();if(session)await showApp()}
+$('#login').addEventListener('click',async()=>{
+  if(!sb)return;$('#gateerr').textContent='';
+  const{error}=await sb.auth.signInWithPassword({email:$('#email').value,password:$('#pw').value});
+  if(error){$('#gateerr').textContent=error.message;return}
+  st.email=$('#email').value;await showApp();
+});
+$('#pw')?.addEventListener('keydown',e=>{if(e.key==='Enter')$('#login').click()});
+checkSession();
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script></body></html>
