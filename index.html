@@ -216,7 +216,7 @@ function updVal(){
   if(v.found===false){e.innerHTML=ban('wn','No valuation available for that plate.')+'<button class="sm" data-a="runval" style="margin-top:8px">Try again (12p)</button>';return}
   if(v.found!==true){e.innerHTML=ban('bad','The saved result looks incomplete.')+'<button class="sm" data-a="runval" style="margin-top:8px">Run again (12p)</button>';return}
   const x=v.values||{};
-  e.innerHTML=eb+mets([['Private (average)',vf(x.privateAverage)],['Auction',vf(x.auction)]])+'<button class="pri" data-a="viewval">View valuation</button>';
+  e.innerHTML=eb+mets([['Sell privately (avg)',vf(x.privateAverage)],['At auction',vf(x.auction)]])+'<button class="pri" data-a="viewval">View valuation</button>';
 }
 function vHistory(){const d=st.draft;return `<div class="card"><h2>${esc(d.model||'No car selected')} <small>${esc(d.reg)}</small></h2></div><div class="card"><h2>History check</h2><div id="histfull"></div></div><div class="card"><h2>Valuation</h2><div id="valfull"></div></div>`}
 function dstr(x){const dt=new Date(x);return isNaN(dt)?String(x):dt.toLocaleDateString('en-GB')}
@@ -337,14 +337,28 @@ function updValFull(){
   if(!v||!v.found){e.innerHTML=eb+'<small>Run a valuation from the Check tab first.</small>';return}
   const x=v.values||{};
   const when=d.valuationAt?new Date(d.valuationAt).toLocaleDateString('en-GB'):'';
+  const lo=[x.privateAverage,x.privateClean].filter(n=>n>0).sort((a,b)=>a-b);
+  const priv=lo.length===0?'—':(lo.length===1||lo[0]===lo[lo.length-1])?f(lo[0]):f(lo[0])+' to '+f(lo[lo.length-1]);
+  const big=(label,val,note)=>`<div class="m" style="margin-bottom:10px"><span>${label}</span><b>${val}</b><small style="display:block;margin-top:2px">${note}</small></div>`;
+  const all=[
+    ['Price when new (OTR)',x.otr,'Roughly what it cost brand new.'],
+    ['Dealer forecourt',x.dealerForecourt,'What a dealer might put it on their forecourt for.'],
+    ['Trade retail',x.tradeRetail,'The trade\u2019s own retail price guide.'],
+    ['Private sale, clean',x.privateClean,'What a private buyer might pay for one in good condition.'],
+    ['Private sale, average',x.privateAverage,'What a private buyer might pay for one in average condition.'],
+    ['Part exchange',x.partExchange,'What a dealer might offer if you trade it in against another car.'],
+    ['Auction',x.auction,'What it typically fetches at auction.'],
+    ['Trade, average',x.tradeAverage,'What a dealer might pay in cash for one in average condition.'],
+    ['Trade, poor',x.tradePoor,'What a dealer might pay in cash for one in poor condition.']
+  ].sort((a,b)=>(b[1]||0)-(a[1]||0));
+  const list=all.map(([n,val,t])=>`<div class="li"><span>${n}<br><small>${t}</small></span><b>${vf(val)}</b></div>`).join('');
   e.innerHTML=eb+`<small style="display:block;margin-bottom:10px">${esc(v.description||'')}<br>Valued at ${esc(v.valuedAtMileage||'?')} miles</small>`
-    +'<h2 style="font-size:15px;margin:4px 0 8px">What it would sell for</h2>'
-    +mets([['Dealer forecourt',vf(x.dealerForecourt)],['Trade retail',vf(x.tradeRetail)],['Private (clean)',vf(x.privateClean)],['Private (average)',vf(x.privateAverage)]])
-    +'<h2 style="font-size:15px;margin:14px 0 8px">What you could sell it on for</h2>'
-    +mets([['Part exchange',vf(x.partExchange)],['Auction',vf(x.auction)],['Trade average',vf(x.tradeAverage)],['Trade poor',vf(x.tradePoor)]])
-    +'<h2 style="font-size:15px;margin:14px 0 8px">Reference</h2>'
-    +mets([['New price (OTR)',vf(x.otr)]])
-    +`<small style="display:block;margin-top:6px">Checked ${when}. Reference figures only. Your Expected sale is not changed.</small><button class="sm" data-a="runval" style="margin-top:8px">Run again (12p)</button>`;
+    +'<p style="font-size:14px;margin:0 0 12px">Selling to the public gets you the most. Selling to a dealer or at auction is quicker but pays less.</p>'
+    +big('Sell privately',priv,'What a private buyer might pay, from average to clean condition.')
+    +big('At auction',vf(x.auction),'What it typically fetches at auction. The nearest guide to what you would pay at one.')
+    +big('Quick sale to a dealer',vf(x.tradeAverage),'What a dealer might pay in cash, average condition.')
+    +dd('v-all','All the figures, highest to lowest',list)
+    +`<small style="display:block;margin-top:10px">Checked ${when}. Guide figures only. Your Expected sale is not changed. For cheaper cars, compare with similar ones actually for sale.</small><button class="sm" data-a="runval" style="margin-top:8px">Run again (12p)</button>`;
 }
 function vView(){const d=st.draft,ns=st.notes[d.model||'_']||'';
 let h=`<div class="card"><h2>${esc(d.model||'No model set')} <small>${esc(d.reg)}</small></h2>
